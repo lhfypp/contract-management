@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.snxy.contract.dao.mapper.ContractFieldResultMapper">
+    <resultMap id="BaseResultMap" type="com.snxy.contract.domain.ContractFieldResult">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="contract_major_id" jdbcType="BIGINT" property="contractMajorId"/>
+        <result column="contract_field_id" jdbcType="BIGINT" property="contractFieldId"/>
+        <result column="field_value" jdbcType="VARCHAR" property="fieldValue"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="is_delete" jdbcType="TINYINT" property="isDelete"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, contract_major_id, contract_field_id, field_value, gmt_create, gmt_modified, 
+    is_delete
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from contract_fileld_result
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from contract_fileld_result
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.snxy.contract.domain.ContractFieldResult">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into contract_fileld_result (contract_major_id, contract_field_id, field_value,
+        gmt_create, gmt_modified, is_delete
+        )
+        values (#{contractMajorId,jdbcType=BIGINT}, #{contractFieldId,jdbcType=BIGINT}, #{fieldValue,jdbcType=VARCHAR},
+        #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=TINYINT}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.snxy.contract.domain.ContractFieldResult">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into contract_fileld_result
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="contractMajorId != null">
+                contract_major_id,
+            </if>
+            <if test="contractFieldId != null">
+                contract_field_id,
+            </if>
+            <if test="fieldValue != null">
+                field_value,
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create,
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified,
+            </if>
+            <if test="isDelete != null">
+                is_delete,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="contractMajorId != null">
+                #{contractMajorId,jdbcType=BIGINT},
+            </if>
+            <if test="contractFieldId != null">
+                #{contractFieldId,jdbcType=BIGINT},
+            </if>
+            <if test="fieldValue != null">
+                #{fieldValue,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtCreate != null">
+                #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null">
+                #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDelete != null">
+                #{isDelete,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.snxy.contract.domain.ContractFieldResult">
+        update contract_fileld_result
+        <set>
+            <if test="contractMajorId != null">
+                contract_major_id = #{contractMajorId,jdbcType=BIGINT},
+            </if>
+            <if test="contractFieldId != null">
+                contract_field_id = #{contractFieldId,jdbcType=BIGINT},
+            </if>
+            <if test="fieldValue != null">
+                field_value = #{fieldValue,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete,jdbcType=TINYINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.snxy.contract.domain.ContractFieldResult">
+    update contract_fileld_result
+    set contract_major_id = #{contractMajorId,jdbcType=BIGINT},
+      contract_field_id = #{contractFieldId,jdbcType=BIGINT},
+      field_value = #{fieldValue,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      is_delete = #{isDelete,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <delete id="deleteByContractMajorId" parameterType="java.lang.Long">
+    delete from contract_fileld_result
+    where contract_major_id = #{contractMajorId,jdbcType=BIGINT}
+  </delete>
+
+    <insert id="batchSave" useGeneratedKeys="true" keyProperty="id">
+
+        insert into contract_fileld_result (contract_major_id, contract_field_id, field_value,
+        gmt_create, gmt_modified, is_delete
+        )
+        values
+        <foreach collection="list" item="cfr" separator=",">
+            (#{cfr.contractMajorId,jdbcType=BIGINT}, #{cfr.contractFieldId,jdbcType=BIGINT}, #{cfr.fieldValue,jdbcType=VARCHAR},
+            #{cfr.gmtCreate,jdbcType=TIMESTAMP}, #{cfr.gmtModified,jdbcType=TIMESTAMP}, #{cfr.isDelete,jdbcType=TINYINT}
+            )
+        </foreach>
+    </insert>
+    <select id="getByContractMajorId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from contract_fileld_result
+        where contract_major_id = #{contractMajorId,jdbcType=BIGINT}
+    </select>
+</mapper>

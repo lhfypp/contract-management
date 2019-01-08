@@ -1,0 +1,9 @@
+com\snxy\contract\service\TestService.class
+com\snxy\contract\service\ContractFieldService.class
+com\snxy\contract\service\ContractFieldResultService.class
+com\snxy\contract\service\ContractMajorService.class
+com\snxy\contract\service\vo\ContractEditVo$ContractEditVoBuilder.class
+com\snxy\contract\service\vo\JsContractMetaData.class
+com\snxy\contract\service\ContractTemplateCategoryService.class
+com\snxy\contract\service\ContractTemplateContentService.class
+com\snxy\contract\service\vo\ContractEditVo.class

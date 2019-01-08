@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>合同编辑</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/bootstrap-select.min.css}" rel="stylesheet"/>
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/bootstrap-select.min.js}"></script>
+    <style type="text/css">
+        /*input {*/
+        /*border: none;*/
+        /*}*/
+
+        .cc {
+            padding: 0px;
+            margin: 0px;
+            outline: 0px;
+            /*line-height: 26px;*/
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom: 1px solid #333333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div>
+        <span>商户名称:</span>
+        <select id="company_id" name="company_id">
+            <option value="">请选择商户</option>
+            <option th:each="company:${companys}" th:value="${company.id} " th:text="${company.merchantName}">
+                [[${company.merchantName}]]
+            </option>
+        </select>
+        <span>商户负责人:</span> <input name="merchant_name" type="text" id="merchant_name">
+        <span>联系电话:</span> <input name="company_mobile" type="text" id="company_mobile">
+    </div>
+    <div>
+        <span>配套设施:</span> <input name="support_facility" type="text" id="support_facility">
+        <span>备注:</span> <input name="remark" type="text" id="remark">
+    </div>
+
+    <div>
+        <span>区域:</span>
+        <select id="rent_area" name="rent_area">
+            <option value="">请选择区域</option>
+            <option th:each="area:${areas}" th:value="${area.id} " th:text="${area.areaName}">
+                [[${area.areaName}]]
+            </option>
+        </select>
+        <span>地点编号(可多选):</span>
+        <select id="rent_site" class="selectpicker bla bla bli" multiple data-live-search="true">
+            <option th:each="rentSite:${rentSites}" th:text="${rentSite.siteNo}">
+                [[${rentSite.siteNo}]]
+            </option>
+        </select>
+    </div>
+</div>
+<div id="contract" th:utext="${contractEdit}" style="margin: 0 auto;width: 1200px"></div>
+<div>
+    <button type="button" id="btnSave">保存</button>
+</div>
+</body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var metaDatas = /*[[${metaDatas}]]*/null;
+    //    var id = /*[[${id}]]*/null;//合同id
+    var valueMap = /*[[${valueMap}]]*/null;
+    //页面参数
+    var creator = /*[[${creator}]]*/null;
+    ;//创建人
+    var contract_template_category_id = /*[[${templateId}]]*/null;//模版id
+
+    var company_id = /*[[${company_id}]]*/null;
+    var onlineUserVo = /*[[${onlineUserVo}]]*/null;
+    ;    //商户公司id ,商户名称
+    /*]]>*/
+    var id = null;
+    //顶部填写内容
+    //    var company_id=1;    //商户公司id ,商户名称
+    var contract_no = null;
+
+    $(function () {
+        if (onlineUserVo) {
+            //company_id
+            $('#company_id').val(company_id);
+            $('#merchant_name').val(onlineUserVo.userName);
+            $('#company_mobile').val(onlineUserVo.phone);
+        }
+
+        if (valueMap) {
+            id = valueMap.id;
+            contract_no = valueMap.contract_no;
+            contract_template_category_id = valueMap.contract_template_category_id;
+
+            //设置变量值，后期设置控件值
+            $('#company_mobile').val(valueMap.company_mobile);
+            $('#merchant_name').val(valueMap.merchant_name);
+            company_id = valueMap.company_id;
+            $('#company_id').val(company_id);
+            $('#rent_area').val(valueMap.rent_area_id);
+            if (valueMap.rent_site_no) {
+                $('#rent_site').val(valueMap.rent_site_no.split(","));
+            }
+            //  rent_site_no = valueMap.rent_site_no;
+            $('#support_facility').val(valueMap.support_facility);
+            $('#remark').val(valueMap.remark);
+
+        }
+
+
+        $('#rent_site').selectpicker({
+            //  'selectedText': 'cat'
+            "noneSelectedText": "请选择"
+        });
+
+        //region 区域修改
+        $('#rent_area').change(function () {
+            var areaId = $(this).val();
+            console.log(areaId);
+
+            //清理地点编号值
+
+            $('#rent_site').empty();
+            if (!areaId)
+                return;
+            $.ajax({
+                cache: true,
+                type: "post",
+                url: "/contract/getRentSite",
+                dataType: "json",
+                data: {"rentAreaId": areaId},
+                success: function (data) {
+                    // console.log(data);
+                    if (data.result) {
+//                        alert(data.data);
+                        var rentSites = data.data;
+                        var option = '';
+                        rentSites.forEach(function (rs) {
+                            console.log(rs.siteNo);
+                            $('#rent_site').append("<option>" + rs.siteNo + "</option>");
+                        });
+                        $('#rent_site').selectpicker('refresh');
+                    }
+                    else {
+                        alert("获取地点编号失败," + data.msg);
+                    }
+                }
+            })
+        })
+        //endregion
+
+        //region 商户修改
+        $('#company_id').change(function () {
+            company_id = $(this).val();
+            console.log(company_id);
+            //   alert(areaId);
+            //清理地点编号值
+            $('#company_mobile').val('');
+            $('#merchant_name').val('');
+            if (!company_id)
+                return;
+            $.ajax({
+                cache: true,
+                type: "post",
+                url: "/contract/getFounder",
+                dataType: "json",
+                data: {"companyId": company_id},
+                success: function (data) {
+                    if (data.result) {
+                        onlineUserVo = data.data;
+                        $('#merchant_name').val(onlineUserVo.userName);
+                        $('#company_mobile').val(onlineUserVo.phone);
+                    }
+                    else {
+                        alert("获取负责人信息出错," + data.msg);
+                    }
+                }
+            })
+        })
+        //endregion
+    })
+
+    //region 保存合同数据
+    $('#btnSave').click(
+        function () {
+            var data = {};
+            addMainFieldValue(data);
+            var allowSubmit = true;
+            $("input[id^='txt_']").each(function (index, item) {
+                    $item = $(item);
+                    var type = $item.attr("type");
+                    var key = null;
+                    var value = null;
+                    if (type == "text") {
+                        key = $item.attr("id").substring(4);
+                        value = $item.val();
+                    }
+                    else if (type = "radio") {
+                        if ($item.is(':checked')) {
+                            key = $item.attr('name');
+                            value = $item.val();
+                        }
+                    }
+                    else {
+                        allowSubmit = false;
+                        alert("不识别的控件类型" + $item.attr("id"));
+                    }
+                    if (key) {
+                        data[key] = value;
+                    }
+                }
+            );
+
+            $.each(metaDatas, function (index, metaData) {
+                var value = data[metaData.code];
+                if (metaData.allowNull == 0) {
+                    if (!value) {
+                        allowSubmit = false;
+                        alert(metaData.name + "不允许为空");
+                        return false;
+                    }
+                }
+
+                //类型判断
+                if (metaData.dataType == 2 && value) {//数值类型
+                    if (isNaN(value)) {
+                        allowSubmit = false;
+                        alert(metaData.name + "需要填写数字");
+                        return false;
+                    }
+                }
+                //正则判断
+                if (metaData.checkRegex && value) {
+                    if (value.search(metaData.checkRegex) < 0) {
+                        allowSubmit = false;
+                        alert(metaData.name + "不合格数据");
+                        return false;
+                    }
+                }
+            });
+            if (allowSubmit == false) {
+                return;
+            }
+            console.log(data);
+            $.ajax({
+                 cache: true,
+                type: "post",
+                url: "/contract/save",
+                dataType: "json",
+                data: data,
+            //    data: {a:1},
+                success: function (data) {
+                    // console.log(data);
+                    if (data.result) {
+//                        alert(data.data);
+                        id = data.data;//给合同id赋值
+                        alert(data.msg);
+                    }
+                    else {
+                        alert("保存失败," + data.msg);
+                    }
+                },
+                error:function (XMLHttpRequest, textStatus, errorThrown) {
+                                    alert(XMLHttpRequest.status);
+                                    alert(XMLHttpRequest.readyState);
+                                    alert(textStatus);
+                }
+            })
+        }
+    );
+
+    function addMainFieldValue(data) {
+        data["id"] = id;
+        data["creator"] = creator;
+        data["contract_template_category_id"] = contract_template_category_id;
+        data["company_id"] = $('#company_id').val();
+        data["company_mobile"] = $('#company_mobile').val();
+        data["merchant_name"] = $('#merchant_name').val();
+
+        data["rent_area_id"] = $('#rent_area').val();
+        var rsArr = $('#rent_site').val();
+        if (rsArr) {
+            data["rent_site_no"] = rsArr.reduce(function (p1, p2) {
+                return p1 + "," + p2
+            });
+        }
+        data["support_facility"] = $('#support_facility').val();
+        data["remark"] = $('#remark').val();
+    }
+    //endregion
+
+
+</script>
+</html>

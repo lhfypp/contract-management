@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.snxy.contract.dao.mapper.AnnouncementMapper">
+  <resultMap id="BaseResultMap" type="com.snxy.contract.domain.Announcement">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="advert_dept" jdbcType="VARCHAR" property="advertDept" />
+    <result column="is_top" jdbcType="TINYINT" property="isTop" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="creator_id" jdbcType="BIGINT" property="creatorId" />
+    <result column="modifier_id" jdbcType="BIGINT" property="modifierId" />
+    <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, title, img_url, content, advert_dept, is_top, gmt_create, gmt_modified, creator_id, 
+    modifier_id, is_delete
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from announcement
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from announcement
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.snxy.contract.domain.Announcement">
+
+    insert into announcement (title, img_url, content, 
+      advert_dept, is_top, gmt_create, 
+      gmt_modified, creator_id, modifier_id, 
+      is_delete)
+    values (#{title,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
+      #{advertDept,jdbcType=VARCHAR}, #{isTop,jdbcType=TINYINT}, #{gmtCreate,jdbcType=TIMESTAMP},
+      #{gmtModified,jdbcType=TIMESTAMP}, #{creatorId,jdbcType=BIGINT}, #{modifierId,jdbcType=BIGINT},
+      #{isDelete,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.snxy.contract.domain.Announcement">
+
+    insert into announcement
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="title != null">
+        title,
+      </if>
+      <if test="imgUrl != null">
+        img_url,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="advertDept != null">
+        advert_dept,
+      </if>
+      <if test="isTop != null">
+        is_top,
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create,
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified,
+      </if>
+      <if test="creatorId != null">
+        creator_id,
+      </if>
+      <if test="modifierId != null">
+        modifier_id,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="imgUrl != null">
+        #{imgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="advertDept != null">
+        #{advertDept,jdbcType=VARCHAR},
+      </if>
+      <if test="isTop != null">
+        #{isTop,jdbcType=TINYINT},
+      </if>
+      <if test="gmtCreate != null">
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creatorId != null">
+        #{creatorId,jdbcType=BIGINT},
+      </if>
+      <if test="modifierId != null">
+        #{modifierId,jdbcType=BIGINT},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.snxy.contract.domain.Announcement">
+    update announcement
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="imgUrl != null">
+        img_url = #{imgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="advertDept != null">
+        advert_dept = #{advertDept,jdbcType=VARCHAR},
+      </if>
+      <if test="isTop != null">
+        is_top = #{isTop,jdbcType=TINYINT},
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creatorId != null">
+        creator_id = #{creatorId,jdbcType=BIGINT},
+      </if>
+      <if test="modifierId != null">
+        modifier_id = #{modifierId,jdbcType=BIGINT},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.snxy.contract.domain.Announcement">
+    update announcement
+    set title = #{title,jdbcType=VARCHAR},
+      img_url = #{imgUrl,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      advert_dept = #{advertDept,jdbcType=VARCHAR},
+      is_top = #{isTop,jdbcType=TINYINT},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      creator_id = #{creatorId,jdbcType=BIGINT},
+      modifier_id = #{modifierId,jdbcType=BIGINT},
+      is_delete = #{isDelete,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="list"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from announcement
+    where   is_delete = #{isDelete}
+    order by is_top desc,gmt_create desc
+  </select>
+
+  <select id="selectNum"  resultType="java.lang.Long">
+    select
+    count(0)
+    from announcement
+    where   is_delete = #{isDelete}
+  </select>
+</mapper>

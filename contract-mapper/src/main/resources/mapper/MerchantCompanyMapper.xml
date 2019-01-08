@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.snxy.contract.dao.mapper.MerchantCompanyMapper">
+    <resultMap id="BaseResultMap" type="com.snxy.contract.domain.MerchantCompany">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="merchant_name" jdbcType="VARCHAR" property="merchantName"/>
+        <result column="social_info_code" jdbcType="VARCHAR" property="socialInfoCode"/>
+        <result column="corporate_certification_url" jdbcType="VARCHAR" property="corporateCertificationUrl"/>
+        <result column="certification_status" jdbcType="TINYINT" property="certificationStatus"/>
+        <result column="legal_person" jdbcType="VARCHAR" property="legalPerson"/>
+        <result column="legal_person_mobile" jdbcType="VARCHAR" property="legalPersonMobile"/>
+        <result column="legal_person_identity_no" jdbcType="VARCHAR" property="legalPersonIdentityNo"/>
+        <result column="business_scope" jdbcType="VARCHAR" property="businessScope"/>
+        <result column="rent_area_id" jdbcType="BIGINT" property="rentAreaId"/>
+        <result column="operation_type_id" jdbcType="BIGINT" property="operationTypeId"/>
+        <result column="registry_localtion" jdbcType="VARCHAR" property="registryLocaltion"/>
+        <result column="emergency_contact" jdbcType="VARCHAR" property="emergencyContact"/>
+        <result column="emergency_contact_mobile" jdbcType="VARCHAR" property="emergencyContactMobile"/>
+        <result column="detail_location" jdbcType="VARCHAR" property="detailLocation"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="is_delete" jdbcType="TINYINT" property="isDelete"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, merchant_name, social_info_code, corporate_certification_url, certification_status, 
+    legal_person, legal_person_mobile, legal_person_identity_no, business_scope, rent_area_id, 
+    operation_type_id, registry_localtion, emergency_contact, emergency_contact_mobile, 
+    detail_location, gmt_create, gmt_modified, is_delete
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from merchant_company
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from merchant_company
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.snxy.contract.domain.MerchantCompany">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into merchant_company (merchant_name, social_info_code, corporate_certification_url,
+        certification_status, legal_person, legal_person_mobile,
+        legal_person_identity_no, business_scope, rent_area_id,
+        operation_type_id, registry_localtion, emergency_contact,
+        emergency_contact_mobile, detail_location,
+        gmt_create, gmt_modified, is_delete
+        )
+        values (#{merchantName,jdbcType=VARCHAR}, #{socialInfoCode,jdbcType=VARCHAR},
+        #{corporateCertificationUrl,jdbcType=VARCHAR},
+        #{certificationStatus,jdbcType=TINYINT}, #{legalPerson,jdbcType=VARCHAR}, #{legalPersonMobile,jdbcType=VARCHAR},
+        #{legalPersonIdentityNo,jdbcType=VARCHAR}, #{businessScope,jdbcType=VARCHAR}, #{rentAreaId,jdbcType=BIGINT},
+        #{operationTypeId,jdbcType=BIGINT}, #{registryLocaltion,jdbcType=VARCHAR}, #{emergencyContact,jdbcType=VARCHAR},
+        #{emergencyContactMobile,jdbcType=VARCHAR}, #{detailLocation,jdbcType=VARCHAR},
+        #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=TINYINT}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.snxy.contract.domain.MerchantCompany">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into merchant_company
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="merchantName != null">
+                merchant_name,
+            </if>
+            <if test="socialInfoCode != null">
+                social_info_code,
+            </if>
+            <if test="corporateCertificationUrl != null">
+                corporate_certification_url,
+            </if>
+            <if test="certificationStatus != null">
+                certification_status,
+            </if>
+            <if test="legalPerson != null">
+                legal_person,
+            </if>
+            <if test="legalPersonMobile != null">
+                legal_person_mobile,
+            </if>
+            <if test="legalPersonIdentityNo != null">
+                legal_person_identity_no,
+            </if>
+            <if test="businessScope != null">
+                business_scope,
+            </if>
+            <if test="rentAreaId != null">
+                rent_area_id,
+            </if>
+            <if test="operationTypeId != null">
+                operation_type_id,
+            </if>
+            <if test="registryLocaltion != null">
+                registry_localtion,
+            </if>
+            <if test="emergencyContact != null">
+                emergency_contact,
+            </if>
+            <if test="emergencyContactMobile != null">
+                emergency_contact_mobile,
+            </if>
+            <if test="detailLocation != null">
+                detail_location,
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create,
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified,
+            </if>
+            <if test="isDelete != null">
+                is_delete,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="merchantName != null">
+                #{merchantName,jdbcType=VARCHAR},
+            </if>
+            <if test="socialInfoCode != null">
+                #{socialInfoCode,jdbcType=VARCHAR},
+            </if>
+            <if test="corporateCertificationUrl != null">
+                #{corporateCertificationUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="certificationStatus != null">
+                #{certificationStatus,jdbcType=TINYINT},
+            </if>
+            <if test="legalPerson != null">
+                #{legalPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="legalPersonMobile != null">
+                #{legalPersonMobile,jdbcType=VARCHAR},
+            </if>
+            <if test="legalPersonIdentityNo != null">
+                #{legalPersonIdentityNo,jdbcType=VARCHAR},
+            </if>
+            <if test="businessScope != null">
+                #{businessScope,jdbcType=VARCHAR},
+            </if>
+            <if test="rentAreaId != null">
+                #{rentAreaId,jdbcType=BIGINT},
+            </if>
+            <if test="operationTypeId != null">
+                #{operationTypeId,jdbcType=BIGINT},
+            </if>
+            <if test="registryLocaltion != null">
+                #{registryLocaltion,jdbcType=VARCHAR},
+            </if>
+            <if test="emergencyContact != null">
+                #{emergencyContact,jdbcType=VARCHAR},
+            </if>
+            <if test="emergencyContactMobile != null">
+                #{emergencyContactMobile,jdbcType=VARCHAR},
+            </if>
+            <if test="detailLocation != null">
+                #{detailLocation,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtCreate != null">
+                #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null">
+                #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDelete != null">
+                #{isDelete,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.snxy.contract.domain.MerchantCompany">
+        update merchant_company
+        <set>
+            <if test="merchantName != null">
+                merchant_name = #{merchantName,jdbcType=VARCHAR},
+            </if>
+            <if test="socialInfoCode != null">
+                social_info_code = #{socialInfoCode,jdbcType=VARCHAR},
+            </if>
+            <if test="corporateCertificationUrl != null">
+                corporate_certification_url = #{corporateCertificationUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="certificationStatus != null">
+                certification_status = #{certificationStatus,jdbcType=TINYINT},
+            </if>
+            <if test="legalPerson != null">
+                legal_person = #{legalPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="legalPersonMobile != null">
+                legal_person_mobile = #{legalPersonMobile,jdbcType=VARCHAR},
+            </if>
+            <if test="legalPersonIdentityNo != null">
+                legal_person_identity_no = #{legalPersonIdentityNo,jdbcType=VARCHAR},
+            </if>
+            <if test="businessScope != null">
+                business_scope = #{businessScope,jdbcType=VARCHAR},
+            </if>
+            <if test="rentAreaId != null">
+                rent_area_id = #{rentAreaId,jdbcType=BIGINT},
+            </if>
+            <if test="operationTypeId != null">
+                operation_type_id = #{operationTypeId,jdbcType=BIGINT},
+            </if>
+            <if test="registryLocaltion != null">
+                registry_localtion = #{registryLocaltion,jdbcType=VARCHAR},
+            </if>
+            <if test="emergencyContact != null">
+                emergency_contact = #{emergencyContact,jdbcType=VARCHAR},
+            </if>
+            <if test="emergencyContactMobile != null">
+                emergency_contact_mobile = #{emergencyContactMobile,jdbcType=VARCHAR},
+            </if>
+            <if test="detailLocation != null">
+                detail_location = #{detailLocation,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete,jdbcType=TINYINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.snxy.contract.domain.MerchantCompany">
+    update merchant_company
+    set merchant_name = #{merchantName,jdbcType=VARCHAR},
+      social_info_code = #{socialInfoCode,jdbcType=VARCHAR},
+      corporate_certification_url = #{corporateCertificationUrl,jdbcType=VARCHAR},
+      certification_status = #{certificationStatus,jdbcType=TINYINT},
+      legal_person = #{legalPerson,jdbcType=VARCHAR},
+      legal_person_mobile = #{legalPersonMobile,jdbcType=VARCHAR},
+      legal_person_identity_no = #{legalPersonIdentityNo,jdbcType=VARCHAR},
+      business_scope = #{businessScope,jdbcType=VARCHAR},
+      rent_area_id = #{rentAreaId,jdbcType=BIGINT},
+      operation_type_id = #{operationTypeId,jdbcType=BIGINT},
+      registry_localtion = #{registryLocaltion,jdbcType=VARCHAR},
+      emergency_contact = #{emergencyContact,jdbcType=VARCHAR},
+      emergency_contact_mobile = #{emergencyContactMobile,jdbcType=VARCHAR},
+      detail_location = #{detailLocation,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      is_delete = #{isDelete,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="list" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from merchant_company
+        where is_delete=0
+    </select>
+</mapper>

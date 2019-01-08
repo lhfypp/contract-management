@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>合同浏览</title>
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <style type="text/css">
+        input {border:none;}
+        .cc{padding: 0px;margin: 0px; outline: 0px;line-height:26px; border-bottom: 1px solid #333333;text-align:center;}
+    </style>
+</head>
+<body >
+<div id="contract" th:utext="${contractView}" style="margin: 0 auto;width: 1200px "> </div>
+<div><button type="button"    id="btnPrint">打印</button><button type="button"    id="btnExport">导出</button></div>
+</body>
+<script  th:inline="javascript">
+
+//     $('#btnSave').click(
+//         function () {
+//             var data={};
+//             $("input[id^='txt_']").each(function (index,item) {
+//                    var key=$(item).attr("id").substring(4);
+//                    var value=$(item).val();
+//                    data[key]=value;
+//                 }
+//             );
+//             var allowSubmit=true;
+//             $.each(metaDatas,function(index,metaData){
+//                 var value=data[metaData.code];
+//                 if(metaData.allowNull==false) {
+//                     if(!value) {
+//                         allowSubmit=false;
+//                         alert(metaData.name+"不允许为空");
+//                         return false;
+//                     }
+//                 }
+//
+//                 //类型判断
+//                 if(metaData.dataType==2&&value){//数值类型
+//                        if(isNaN(value)){
+//                            allowSubmit=false;
+//                            alert(metaData.name+"需要填写数字");
+//                            return false;
+//                        }
+//                 }
+//                 //正则判断
+//                 if(metaData.checkRegex&&value){
+//                     if(value.search(metaData.checkRegex)<0){
+//                         allowSubmit=false;
+//                         alert(metaData.name+"不合格数据");
+//                         return false;
+//                     }
+//                 }
+//             });
+//             if(allowSubmit==false){
+//                 return;
+//             }
+//             $.ajax({
+//                 cache:true,
+//                 type:"post",
+//                 url:"/contract/saveContract",
+//                 dataType: "json",
+//                 data:data,
+//                 success:function (data) {
+//                     console.log(data);
+//
+//                 }
+//             })
+//         }
+//     );
+</script>
+</html>

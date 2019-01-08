@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.snxy.contract.dao.mapper.ContractMajorMapper">
+  <resultMap id="BaseResultMap" type="com.snxy.contract.domain.ContractMajor">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="contract_template_category_id" jdbcType="BIGINT" property="contractTemplateCategoryId" />
+    <result column="contract_no" jdbcType="VARCHAR" property="contractNo" />
+    <result column="company_id" jdbcType="BIGINT" property="companyId" />
+    <result column="company_mobile" jdbcType="VARCHAR" property="companyMobile" />
+    <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
+    <result column="rent_area_id" jdbcType="BIGINT" property="rentAreaId" />
+    <result column="rent_site_no" jdbcType="VARCHAR" property="rentSiteNo" />
+    <result column="support_facility" jdbcType="VARCHAR" property="supportFacility" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="second_party" jdbcType="VARCHAR" property="secondParty" />
+    <result column="room_number" jdbcType="INTEGER" property="roomNumber" />
+    <result column="area" jdbcType="SMALLINT" property="area" />
+    <result column="rent_aim" jdbcType="VARCHAR" property="rentAim" />
+    <result column="agreement_period" jdbcType="REAL" property="agreementPeriod" />
+    <result column="rent_start_time" jdbcType="TIMESTAMP" property="rentStartTime" />
+    <result column="rent_start_time_year" jdbcType="SMALLINT" property="rentStartTimeYear" />
+    <result column="rent_start_time_month" jdbcType="SMALLINT" property="rentStartTimeMonth" />
+    <result column="rent_start_time_day" jdbcType="SMALLINT" property="rentStartTimeDay" />
+    <result column="rent_end_time" jdbcType="TIMESTAMP" property="rentEndTime" />
+    <result column="rent_end_time_year" jdbcType="SMALLINT" property="rentEndTimeYear" />
+    <result column="rent_end_time_month" jdbcType="SMALLINT" property="rentEndTimeMonth" />
+    <result column="rent_end_time_day" jdbcType="SMALLINT" property="rentEndTimeDay" />
+    <result column="rent_frequency" jdbcType="SMALLINT" property="rentFrequency" />
+    <result column="rent_fee" jdbcType="INTEGER" property="rentFee" />
+    <result column="deposit" jdbcType="INTEGER" property="deposit" />
+    <result column="payment_frequency" jdbcType="INTEGER" property="paymentFrequency" />
+    <result column="health_fee" jdbcType="INTEGER" property="healthFee" />
+    <result column="water_fee" jdbcType="INTEGER" property="waterFee" />
+    <result column="signer_mobile" jdbcType="VARCHAR" property="signerMobile" />
+    <result column="sign_time" jdbcType="TIMESTAMP" property="signTime" />
+    <result column="sign_time_year" jdbcType="SMALLINT" property="signTimeYear" />
+    <result column="sign_time_month" jdbcType="SMALLINT" property="signTimeMonth" />
+    <result column="sign_time_day" jdbcType="SMALLINT" property="signTimeDay" />
+    <result column="drafter_id" jdbcType="BIGINT" property="drafterId" />
+    <result column="is_valid" jdbcType="INTEGER" property="isValid" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="total_fee" jdbcType="INTEGER" property="totalFee" />
+    <result column="received_fee" jdbcType="INTEGER" property="receivedFee" />
+    <result column="current_fee" jdbcType="INTEGER" property="currentFee" />
+    <result column="residual_fee" jdbcType="INTEGER" property="residualFee" />
+    <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, contract_template_category_id, contract_no, company_id, company_mobile, merchant_name, 
+    rent_area_id, rent_site_no, support_facility, remark, second_party, room_number, 
+    area, rent_aim, agreement_period, rent_start_time, rent_start_time_year, rent_start_time_month, 
+    rent_start_time_day, rent_end_time, rent_end_time_year, rent_end_time_month, rent_end_time_day, 
+    rent_frequency, rent_fee, deposit, payment_frequency, health_fee, water_fee, signer_mobile, 
+    sign_time, sign_time_year, sign_time_month, sign_time_day, drafter_id, is_valid, 
+    status, total_fee, received_fee, current_fee, residual_fee, is_delete
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from contract_major
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from contract_major
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.snxy.contract.domain.ContractMajor">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into contract_major (contract_template_category_id, contract_no, 
+      company_id, company_mobile, merchant_name, 
+      rent_area_id, rent_site_no, support_facility, 
+      remark, second_party, room_number, 
+      area, rent_aim, agreement_period, 
+      rent_start_time, rent_start_time_year, rent_start_time_month, 
+      rent_start_time_day, rent_end_time, rent_end_time_year, 
+      rent_end_time_month, rent_end_time_day, rent_frequency, 
+      rent_fee, deposit, payment_frequency, 
+      health_fee, water_fee, signer_mobile, 
+      sign_time, sign_time_year, sign_time_month, 
+      sign_time_day, drafter_id, is_valid, 
+      status, total_fee, received_fee, 
+      current_fee, residual_fee, is_delete
+      )
+    values (#{contractTemplateCategoryId,jdbcType=BIGINT}, #{contractNo,jdbcType=VARCHAR}, 
+      #{companyId,jdbcType=BIGINT}, #{companyMobile,jdbcType=VARCHAR}, #{merchantName,jdbcType=VARCHAR}, 
+      #{rentAreaId,jdbcType=BIGINT}, #{rentSiteNo,jdbcType=VARCHAR}, #{supportFacility,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{secondParty,jdbcType=VARCHAR}, #{roomNumber,jdbcType=INTEGER}, 
+      #{area,jdbcType=SMALLINT}, #{rentAim,jdbcType=VARCHAR}, #{agreementPeriod,jdbcType=REAL}, 
+      #{rentStartTime,jdbcType=TIMESTAMP}, #{rentStartTimeYear,jdbcType=SMALLINT}, #{rentStartTimeMonth,jdbcType=SMALLINT}, 
+      #{rentStartTimeDay,jdbcType=SMALLINT}, #{rentEndTime,jdbcType=TIMESTAMP}, #{rentEndTimeYear,jdbcType=SMALLINT}, 
+      #{rentEndTimeMonth,jdbcType=SMALLINT}, #{rentEndTimeDay,jdbcType=SMALLINT}, #{rentFrequency,jdbcType=SMALLINT}, 
+      #{rentFee,jdbcType=INTEGER}, #{deposit,jdbcType=INTEGER}, #{paymentFrequency,jdbcType=INTEGER}, 
+      #{healthFee,jdbcType=INTEGER}, #{waterFee,jdbcType=INTEGER}, #{signerMobile,jdbcType=VARCHAR}, 
+      #{signTime,jdbcType=TIMESTAMP}, #{signTimeYear,jdbcType=SMALLINT}, #{signTimeMonth,jdbcType=SMALLINT}, 
+      #{signTimeDay,jdbcType=SMALLINT}, #{drafterId,jdbcType=BIGINT}, #{isValid,jdbcType=INTEGER}, 
+      #{status,jdbcType=INTEGER}, #{totalFee,jdbcType=INTEGER}, #{receivedFee,jdbcType=INTEGER}, 
+      #{currentFee,jdbcType=INTEGER}, #{residualFee,jdbcType=INTEGER}, #{isDelete,jdbcType=TINYINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.snxy.contract.domain.ContractMajor">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into contract_major
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="contractTemplateCategoryId != null">
+        contract_template_category_id,
+      </if>
+      <if test="contractNo != null">
+        contract_no,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="companyMobile != null">
+        company_mobile,
+      </if>
+      <if test="merchantName != null">
+        merchant_name,
+      </if>
+      <if test="rentAreaId != null">
+        rent_area_id,
+      </if>
+      <if test="rentSiteNo != null">
+        rent_site_no,
+      </if>
+      <if test="supportFacility != null">
+        support_facility,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="secondParty != null">
+        second_party,
+      </if>
+      <if test="roomNumber != null">
+        room_number,
+      </if>
+      <if test="area != null">
+        area,
+      </if>
+      <if test="rentAim != null">
+        rent_aim,
+      </if>
+      <if test="agreementPeriod != null">
+        agreement_period,
+      </if>
+      <if test="rentStartTime != null">
+        rent_start_time,
+      </if>
+      <if test="rentStartTimeYear != null">
+        rent_start_time_year,
+      </if>
+      <if test="rentStartTimeMonth != null">
+        rent_start_time_month,
+      </if>
+      <if test="rentStartTimeDay != null">
+        rent_start_time_day,
+      </if>
+      <if test="rentEndTime != null">
+        rent_end_time,
+      </if>
+      <if test="rentEndTimeYear != null">
+        rent_end_time_year,
+      </if>
+      <if test="rentEndTimeMonth != null">
+        rent_end_time_month,
+      </if>
+      <if test="rentEndTimeDay != null">
+        rent_end_time_day,
+      </if>
+      <if test="rentFrequency != null">
+        rent_frequency,
+      </if>
+      <if test="rentFee != null">
+        rent_fee,
+      </if>
+      <if test="deposit != null">
+        deposit,
+      </if>
+      <if test="paymentFrequency != null">
+        payment_frequency,
+      </if>
+      <if test="healthFee != null">
+        health_fee,
+      </if>
+      <if test="waterFee != null">
+        water_fee,
+      </if>
+      <if test="signerMobile != null">
+        signer_mobile,
+      </if>
+      <if test="signTime != null">
+        sign_time,
+      </if>
+      <if test="signTimeYear != null">
+        sign_time_year,
+      </if>
+      <if test="signTimeMonth != null">
+        sign_time_month,
+      </if>
+      <if test="signTimeDay != null">
+        sign_time_day,
+      </if>
+      <if test="drafterId != null">
+        drafter_id,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="totalFee != null">
+        total_fee,
+      </if>
+      <if test="receivedFee != null">
+        received_fee,
+      </if>
+      <if test="currentFee != null">
+        current_fee,
+      </if>
+      <if test="residualFee != null">
+        residual_fee,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="contractTemplateCategoryId != null">
+        #{contractTemplateCategoryId,jdbcType=BIGINT},
+      </if>
+      <if test="contractNo != null">
+        #{contractNo,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=BIGINT},
+      </if>
+      <if test="companyMobile != null">
+        #{companyMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantName != null">
+        #{merchantName,jdbcType=VARCHAR},
+      </if>
+      <if test="rentAreaId != null">
+        #{rentAreaId,jdbcType=BIGINT},
+      </if>
+      <if test="rentSiteNo != null">
+        #{rentSiteNo,jdbcType=VARCHAR},
+      </if>
+      <if test="supportFacility != null">
+        #{supportFacility,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="secondParty != null">
+        #{secondParty,jdbcType=VARCHAR},
+      </if>
+      <if test="roomNumber != null">
+        #{roomNumber,jdbcType=INTEGER},
+      </if>
+      <if test="area != null">
+        #{area,jdbcType=SMALLINT},
+      </if>
+      <if test="rentAim != null">
+        #{rentAim,jdbcType=VARCHAR},
+      </if>
+      <if test="agreementPeriod != null">
+        #{agreementPeriod,jdbcType=REAL},
+      </if>
+      <if test="rentStartTime != null">
+        #{rentStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rentStartTimeYear != null">
+        #{rentStartTimeYear,jdbcType=SMALLINT},
+      </if>
+      <if test="rentStartTimeMonth != null">
+        #{rentStartTimeMonth,jdbcType=SMALLINT},
+      </if>
+      <if test="rentStartTimeDay != null">
+        #{rentStartTimeDay,jdbcType=SMALLINT},
+      </if>
+      <if test="rentEndTime != null">
+        #{rentEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rentEndTimeYear != null">
+        #{rentEndTimeYear,jdbcType=SMALLINT},
+      </if>
+      <if test="rentEndTimeMonth != null">
+        #{rentEndTimeMonth,jdbcType=SMALLINT},
+      </if>
+      <if test="rentEndTimeDay != null">
+        #{rentEndTimeDay,jdbcType=SMALLINT},
+      </if>
+      <if test="rentFrequency != null">
+        #{rentFrequency,jdbcType=SMALLINT},
+      </if>
+      <if test="rentFee != null">
+        #{rentFee,jdbcType=INTEGER},
+      </if>
+      <if test="deposit != null">
+        #{deposit,jdbcType=INTEGER},
+      </if>
+      <if test="paymentFrequency != null">
+        #{paymentFrequency,jdbcType=INTEGER},
+      </if>
+      <if test="healthFee != null">
+        #{healthFee,jdbcType=INTEGER},
+      </if>
+      <if test="waterFee != null">
+        #{waterFee,jdbcType=INTEGER},
+      </if>
+      <if test="signerMobile != null">
+        #{signerMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="signTime != null">
+        #{signTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="signTimeYear != null">
+        #{signTimeYear,jdbcType=SMALLINT},
+      </if>
+      <if test="signTimeMonth != null">
+        #{signTimeMonth,jdbcType=SMALLINT},
+      </if>
+      <if test="signTimeDay != null">
+        #{signTimeDay,jdbcType=SMALLINT},
+      </if>
+      <if test="drafterId != null">
+        #{drafterId,jdbcType=BIGINT},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="totalFee != null">
+        #{totalFee,jdbcType=INTEGER},
+      </if>
+      <if test="receivedFee != null">
+        #{receivedFee,jdbcType=INTEGER},
+      </if>
+      <if test="currentFee != null">
+        #{currentFee,jdbcType=INTEGER},
+      </if>
+      <if test="residualFee != null">
+        #{residualFee,jdbcType=INTEGER},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.snxy.contract.domain.ContractMajor">
+    update contract_major
+    <set>
+      <if test="contractTemplateCategoryId != null">
+        contract_template_category_id = #{contractTemplateCategoryId,jdbcType=BIGINT},
+      </if>
+      <if test="contractNo != null">
+        contract_no = #{contractNo,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=BIGINT},
+      </if>
+      <if test="companyMobile != null">
+        company_mobile = #{companyMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantName != null">
+        merchant_name = #{merchantName,jdbcType=VARCHAR},
+      </if>
+      <if test="rentAreaId != null">
+        rent_area_id = #{rentAreaId,jdbcType=BIGINT},
+      </if>
+      <if test="rentSiteNo != null">
+        rent_site_no = #{rentSiteNo,jdbcType=VARCHAR},
+      </if>
+      <if test="supportFacility != null">
+        support_facility = #{supportFacility,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="secondParty != null">
+        second_party = #{secondParty,jdbcType=VARCHAR},
+      </if>
+      <if test="roomNumber != null">
+        room_number = #{roomNumber,jdbcType=INTEGER},
+      </if>
+      <if test="area != null">
+        area = #{area,jdbcType=SMALLINT},
+      </if>
+      <if test="rentAim != null">
+        rent_aim = #{rentAim,jdbcType=VARCHAR},
+      </if>
+      <if test="agreementPeriod != null">
+        agreement_period = #{agreementPeriod,jdbcType=REAL},
+      </if>
+      <if test="rentStartTime != null">
+        rent_start_time = #{rentStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rentStartTimeYear != null">
+        rent_start_time_year = #{rentStartTimeYear,jdbcType=SMALLINT},
+      </if>
+      <if test="rentStartTimeMonth != null">
+        rent_start_time_month = #{rentStartTimeMonth,jdbcType=SMALLINT},
+      </if>
+      <if test="rentStartTimeDay != null">
+        rent_start_time_day = #{rentStartTimeDay,jdbcType=SMALLINT},
+      </if>
+      <if test="rentEndTime != null">
+        rent_end_time = #{rentEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rentEndTimeYear != null">
+        rent_end_time_year = #{rentEndTimeYear,jdbcType=SMALLINT},
+      </if>
+      <if test="rentEndTimeMonth != null">
+        rent_end_time_month = #{rentEndTimeMonth,jdbcType=SMALLINT},
+      </if>
+      <if test="rentEndTimeDay != null">
+        rent_end_time_day = #{rentEndTimeDay,jdbcType=SMALLINT},
+      </if>
+      <if test="rentFrequency != null">
+        rent_frequency = #{rentFrequency,jdbcType=SMALLINT},
+      </if>
+      <if test="rentFee != null">
+        rent_fee = #{rentFee,jdbcType=INTEGER},
+      </if>
+      <if test="deposit != null">
+        deposit = #{deposit,jdbcType=INTEGER},
+      </if>
+      <if test="paymentFrequency != null">
+        payment_frequency = #{paymentFrequency,jdbcType=INTEGER},
+      </if>
+      <if test="healthFee != null">
+        health_fee = #{healthFee,jdbcType=INTEGER},
+      </if>
+      <if test="waterFee != null">
+        water_fee = #{waterFee,jdbcType=INTEGER},
+      </if>
+      <if test="signerMobile != null">
+        signer_mobile = #{signerMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="signTime != null">
+        sign_time = #{signTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="signTimeYear != null">
+        sign_time_year = #{signTimeYear,jdbcType=SMALLINT},
+      </if>
+      <if test="signTimeMonth != null">
+        sign_time_month = #{signTimeMonth,jdbcType=SMALLINT},
+      </if>
+      <if test="signTimeDay != null">
+        sign_time_day = #{signTimeDay,jdbcType=SMALLINT},
+      </if>
+      <if test="drafterId != null">
+        drafter_id = #{drafterId,jdbcType=BIGINT},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="totalFee != null">
+        total_fee = #{totalFee,jdbcType=INTEGER},
+      </if>
+      <if test="receivedFee != null">
+        received_fee = #{receivedFee,jdbcType=INTEGER},
+      </if>
+      <if test="currentFee != null">
+        current_fee = #{currentFee,jdbcType=INTEGER},
+      </if>
+      <if test="residualFee != null">
+        residual_fee = #{residualFee,jdbcType=INTEGER},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.snxy.contract.domain.ContractMajor">
+    update contract_major
+    set contract_template_category_id = #{contractTemplateCategoryId,jdbcType=BIGINT},
+      contract_no = #{contractNo,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=BIGINT},
+      company_mobile = #{companyMobile,jdbcType=VARCHAR},
+      merchant_name = #{merchantName,jdbcType=VARCHAR},
+      rent_area_id = #{rentAreaId,jdbcType=BIGINT},
+      rent_site_no = #{rentSiteNo,jdbcType=VARCHAR},
+      support_facility = #{supportFacility,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      second_party = #{secondParty,jdbcType=VARCHAR},
+      room_number = #{roomNumber,jdbcType=INTEGER},
+      area = #{area,jdbcType=SMALLINT},
+      rent_aim = #{rentAim,jdbcType=VARCHAR},
+      agreement_period = #{agreementPeriod,jdbcType=REAL},
+      rent_start_time = #{rentStartTime,jdbcType=TIMESTAMP},
+      rent_start_time_year = #{rentStartTimeYear,jdbcType=SMALLINT},
+      rent_start_time_month = #{rentStartTimeMonth,jdbcType=SMALLINT},
+      rent_start_time_day = #{rentStartTimeDay,jdbcType=SMALLINT},
+      rent_end_time = #{rentEndTime,jdbcType=TIMESTAMP},
+      rent_end_time_year = #{rentEndTimeYear,jdbcType=SMALLINT},
+      rent_end_time_month = #{rentEndTimeMonth,jdbcType=SMALLINT},
+      rent_end_time_day = #{rentEndTimeDay,jdbcType=SMALLINT},
+      rent_frequency = #{rentFrequency,jdbcType=SMALLINT},
+      rent_fee = #{rentFee,jdbcType=INTEGER},
+      deposit = #{deposit,jdbcType=INTEGER},
+      payment_frequency = #{paymentFrequency,jdbcType=INTEGER},
+      health_fee = #{healthFee,jdbcType=INTEGER},
+      water_fee = #{waterFee,jdbcType=INTEGER},
+      signer_mobile = #{signerMobile,jdbcType=VARCHAR},
+      sign_time = #{signTime,jdbcType=TIMESTAMP},
+      sign_time_year = #{signTimeYear,jdbcType=SMALLINT},
+      sign_time_month = #{signTimeMonth,jdbcType=SMALLINT},
+      sign_time_day = #{signTimeDay,jdbcType=SMALLINT},
+      drafter_id = #{drafterId,jdbcType=BIGINT},
+      is_valid = #{isValid,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      total_fee = #{totalFee,jdbcType=INTEGER},
+      received_fee = #{receivedFee,jdbcType=INTEGER},
+      current_fee = #{currentFee,jdbcType=INTEGER},
+      residual_fee = #{residualFee,jdbcType=INTEGER},
+      is_delete = #{isDelete,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <insert id="insertMajorContract" parameterType="com.snxy.contract.domain.ContractMajor">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    ${insertSql}
+  </insert>
+  <insert id="insertByMap" parameterType="map">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    ${insertSql}
+  </insert>
+
+  <update id="updateBySql" parameterType="java.lang.String">
+    ${updateSql}
+  </update>
+  <select id="selectBySql" parameterType="java.lang.String" resultType="map">
+    ${selectSql}
+  </select>
+  <select id="getTemplateIdById" parameterType="java.lang.Long" resultType="java.lang.Integer">
+    select
+     contract_template_category_id
+    from contract_major
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+</mapper>

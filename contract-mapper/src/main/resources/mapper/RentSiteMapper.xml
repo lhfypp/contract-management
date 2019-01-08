@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.snxy.contract.dao.mapper.RentSiteMapper">
+  <resultMap id="BaseResultMap" type="com.snxy.contract.domain.RentSite">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="site_type" jdbcType="INTEGER" property="siteType" />
+    <result column="area_id" jdbcType="BIGINT" property="areaId" />
+    <result column="site_no" jdbcType="VARCHAR" property="siteNo" />
+    <result column="site_name" jdbcType="VARCHAR" property="siteName" />
+    <result column="gps" jdbcType="VARCHAR" property="gps" />
+    <result column="longitude" jdbcType="DECIMAL" property="longitude" />
+    <result column="latitude" jdbcType="DECIMAL" property="latitude" />
+    <result column="site_area" jdbcType="INTEGER" property="siteArea" />
+    <result column="outside_image" jdbcType="VARCHAR" property="outsideImage" />
+    <result column="inside_image" jdbcType="VARCHAR" property="insideImage" />
+    <result column="support_facility" jdbcType="VARCHAR" property="supportFacility" />
+    <result column="support_park" jdbcType="VARCHAR" property="supportPark" />
+    <result column="be_rented" jdbcType="TINYINT" property="beRented" />
+    <result column="curr_contract_end_time" jdbcType="TIMESTAMP" property="currContractEndTime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, site_type, area_id, site_no, site_name, gps, longitude, latitude, site_area, 
+    outside_image, inside_image, support_facility, support_park, be_rented, curr_contract_end_time, 
+    remark, is_delete
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from rent_site
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from rent_site
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.snxy.contract.domain.RentSite">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into rent_site (site_type, area_id, site_no, 
+      site_name, gps, longitude, 
+      latitude, site_area, outside_image, 
+      inside_image, support_facility, support_park, 
+      be_rented, curr_contract_end_time, remark, 
+      is_delete)
+    values (#{siteType,jdbcType=INTEGER}, #{areaId,jdbcType=BIGINT}, #{siteNo,jdbcType=VARCHAR}, 
+      #{siteName,jdbcType=VARCHAR}, #{gps,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL}, 
+      #{latitude,jdbcType=DECIMAL}, #{siteArea,jdbcType=INTEGER}, #{outsideImage,jdbcType=VARCHAR}, 
+      #{insideImage,jdbcType=VARCHAR}, #{supportFacility,jdbcType=VARCHAR}, #{supportPark,jdbcType=VARCHAR}, 
+      #{beRented,jdbcType=TINYINT}, #{currContractEndTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, 
+      #{isDelete,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.snxy.contract.domain.RentSite">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into rent_site
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="siteType != null">
+        site_type,
+      </if>
+      <if test="areaId != null">
+        area_id,
+      </if>
+      <if test="siteNo != null">
+        site_no,
+      </if>
+      <if test="siteName != null">
+        site_name,
+      </if>
+      <if test="gps != null">
+        gps,
+      </if>
+      <if test="longitude != null">
+        longitude,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="siteArea != null">
+        site_area,
+      </if>
+      <if test="outsideImage != null">
+        outside_image,
+      </if>
+      <if test="insideImage != null">
+        inside_image,
+      </if>
+      <if test="supportFacility != null">
+        support_facility,
+      </if>
+      <if test="supportPark != null">
+        support_park,
+      </if>
+      <if test="beRented != null">
+        be_rented,
+      </if>
+      <if test="currContractEndTime != null">
+        curr_contract_end_time,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="siteType != null">
+        #{siteType,jdbcType=INTEGER},
+      </if>
+      <if test="areaId != null">
+        #{areaId,jdbcType=BIGINT},
+      </if>
+      <if test="siteNo != null">
+        #{siteNo,jdbcType=VARCHAR},
+      </if>
+      <if test="siteName != null">
+        #{siteName,jdbcType=VARCHAR},
+      </if>
+      <if test="gps != null">
+        #{gps,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null">
+        #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="siteArea != null">
+        #{siteArea,jdbcType=INTEGER},
+      </if>
+      <if test="outsideImage != null">
+        #{outsideImage,jdbcType=VARCHAR},
+      </if>
+      <if test="insideImage != null">
+        #{insideImage,jdbcType=VARCHAR},
+      </if>
+      <if test="supportFacility != null">
+        #{supportFacility,jdbcType=VARCHAR},
+      </if>
+      <if test="supportPark != null">
+        #{supportPark,jdbcType=VARCHAR},
+      </if>
+      <if test="beRented != null">
+        #{beRented,jdbcType=TINYINT},
+      </if>
+      <if test="currContractEndTime != null">
+        #{currContractEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.snxy.contract.domain.RentSite">
+    update rent_site
+    <set>
+      <if test="siteType != null">
+        site_type = #{siteType,jdbcType=INTEGER},
+      </if>
+      <if test="areaId != null">
+        area_id = #{areaId,jdbcType=BIGINT},
+      </if>
+      <if test="siteNo != null">
+        site_no = #{siteNo,jdbcType=VARCHAR},
+      </if>
+      <if test="siteName != null">
+        site_name = #{siteName,jdbcType=VARCHAR},
+      </if>
+      <if test="gps != null">
+        gps = #{gps,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="siteArea != null">
+        site_area = #{siteArea,jdbcType=INTEGER},
+      </if>
+      <if test="outsideImage != null">
+        outside_image = #{outsideImage,jdbcType=VARCHAR},
+      </if>
+      <if test="insideImage != null">
+        inside_image = #{insideImage,jdbcType=VARCHAR},
+      </if>
+      <if test="supportFacility != null">
+        support_facility = #{supportFacility,jdbcType=VARCHAR},
+      </if>
+      <if test="supportPark != null">
+        support_park = #{supportPark,jdbcType=VARCHAR},
+      </if>
+      <if test="beRented != null">
+        be_rented = #{beRented,jdbcType=TINYINT},
+      </if>
+      <if test="currContractEndTime != null">
+        curr_contract_end_time = #{currContractEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.snxy.contract.domain.RentSite">
+    update rent_site
+    set site_type = #{siteType,jdbcType=INTEGER},
+      area_id = #{areaId,jdbcType=BIGINT},
+      site_no = #{siteNo,jdbcType=VARCHAR},
+      site_name = #{siteName,jdbcType=VARCHAR},
+      gps = #{gps,jdbcType=VARCHAR},
+      longitude = #{longitude,jdbcType=DECIMAL},
+      latitude = #{latitude,jdbcType=DECIMAL},
+      site_area = #{siteArea,jdbcType=INTEGER},
+      outside_image = #{outsideImage,jdbcType=VARCHAR},
+      inside_image = #{insideImage,jdbcType=VARCHAR},
+      support_facility = #{supportFacility,jdbcType=VARCHAR},
+      support_park = #{supportPark,jdbcType=VARCHAR},
+      be_rented = #{beRented,jdbcType=TINYINT},
+      curr_contract_end_time = #{currContractEndTime,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR},
+      is_delete = #{isDelete,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="getRentSiteByRentAreaId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from rent_site
+    where  area_id = #{rentAreaId,jdbcType=BIGINT}
+  </select>
+</mapper>
