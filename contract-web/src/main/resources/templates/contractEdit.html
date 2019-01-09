@@ -9,9 +9,6 @@
     <script th:src="@{/js/bootstrap.min.js}"></script>
     <script th:src="@{/js/bootstrap-select.min.js}"></script>
     <style type="text/css">
-        /*input {*/
-        /*border: none;*/
-        /*}*/
 
         .cc {
             padding: 0px;
@@ -24,11 +21,43 @@
             border-bottom: 1px solid #333333;
             text-align: center;
         }
+
+        .box {
+             /*text-align: left;*/
+            margin: 5px 0;
+        }
+
+        .box span {
+            display: inline-block;
+            /*margin-left: 50px;*/
+        }
+
+        .box input {
+            display: inline-block;
+        }
+
+        .box select {
+            display: inline-block;
+            width: 174px;
+        }
+
+        .mybtn {
+            text-align: center;
+            margin: 5px 0;
+        }
+
+        #btnSave {
+            background: #1c84c6;
+            border: 0;
+            border-radius: 5px;
+            color: #fff;
+            padding: 4px 10px;
+        }
     </style>
 </head>
 <body>
 <div>
-    <div>
+    <div class="box">
         <span>商户名称:</span>
         <select id="company_id" name="company_id">
             <option value="">请选择商户</option>
@@ -39,13 +68,13 @@
         <span>商户负责人:</span> <input name="merchant_name" type="text" id="merchant_name">
         <span>联系电话:</span> <input name="company_mobile" type="text" id="company_mobile">
     </div>
-    <div>
+    <div class="box">
         <span>配套设施:</span> <input name="support_facility" type="text" id="support_facility">
-        <span>备注:</span> <input name="remark" type="text" id="remark">
+        <span>备注:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <input name="remark" type="text" id="remark">
     </div>
 
-    <div>
-        <span>区域:</span>
+    <div class="box">
+        <span>区域:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <select id="rent_area" name="rent_area">
             <option value="">请选择区域</option>
             <option th:each="area:${areas}" th:value="${area.id} " th:text="${area.areaName}">
@@ -61,7 +90,7 @@
     </div>
 </div>
 <div id="contract" th:utext="${contractEdit}" style="margin: 0 auto;width: 1200px"></div>
-<div>
+<div class="mybtn">
     <button type="button" id="btnSave">保存</button>
 </div>
 </body>
@@ -85,6 +114,10 @@
     var contract_no = null;
 
     $(function () {
+        //设置页面按钮居中
+        var width = $(document.body).width();
+        //第一行累加宽度是530左右
+        $('.box').css({"margin-left":((width-600)/2)+"px"});
         if (onlineUserVo) {
             //company_id
             $('#company_id').val(company_id);
@@ -222,6 +255,7 @@
                     if (!value) {
                         allowSubmit = false;
                         alert(metaData.name + "不允许为空");
+                        $('#txt_'+metaData.code).focus();
                         return false;
                     }
                 }
@@ -231,6 +265,7 @@
                     if (isNaN(value)) {
                         allowSubmit = false;
                         alert(metaData.name + "需要填写数字");
+                        $('#txt_'+metaData.code).focus();
                         return false;
                     }
                 }
@@ -239,6 +274,7 @@
                     if (value.search(metaData.checkRegex) < 0) {
                         allowSubmit = false;
                         alert(metaData.name + "不合格数据");
+                        $('#txt_'+metaData.code).focus();
                         return false;
                     }
                 }
@@ -248,12 +284,12 @@
             }
             console.log(data);
             $.ajax({
-                 cache: true,
+                cache: true,
                 type: "post",
                 url: "/contract/save",
                 dataType: "json",
                 data: data,
-            //    data: {a:1},
+                //    data: {a:1},
                 success: function (data) {
                     // console.log(data);
                     if (data.result) {
@@ -265,10 +301,10 @@
                         alert("保存失败," + data.msg);
                     }
                 },
-                error:function (XMLHttpRequest, textStatus, errorThrown) {
-                                    alert(XMLHttpRequest.status);
-                                    alert(XMLHttpRequest.readyState);
-                                    alert(textStatus);
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.status);
+                    alert(XMLHttpRequest.readyState);
+                    alert(textStatus);
                 }
             })
         }

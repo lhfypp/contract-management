@@ -37,7 +37,8 @@ public class ContractMajorServiceImpl implements ContractMajorService {
     private final static List<String> extraFields = Arrays.asList(
             "id",
             "contract_no",
-            "contract_template_category_id"
+            "contract_template_category_id",
+            "drafter_id"
     );
 
     @Resource

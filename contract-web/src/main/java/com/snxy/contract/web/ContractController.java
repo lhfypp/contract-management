@@ -40,7 +40,7 @@ public class ContractController {
     public String contractEdit(@RequestParam(value = "id", required = false) Long id,
                                @RequestParam(value = "templateId", required = false) Integer templateId,
                                @RequestParam(value = "companyId", required = false) Integer companyId,
-                               @RequestParam(value = "creator",  required = false) Integer creator,
+                               @RequestParam(value = "creator", required = false) Integer creator,
                                ModelMap modelMap) {
         //加载公司
         modelMap.put("companys", merchantCompanyService.list());
@@ -53,16 +53,22 @@ public class ContractController {
             contractEditVo = contractMajorService.contractEdit(id);
 
             modelMap.put("valueMap", contractEditVo.getValueMap());
-            Long rentAreaId= contractEditVo.getValueMap().get("rent_area_id")==null? null:Long.valueOf(contractEditVo.getValueMap().get("rent_area_id").toString());
-            if(rentAreaId!=null){
+            Long rentAreaId = contractEditVo.getValueMap().get("rent_area_id") == null ? null : Long.valueOf(contractEditVo.getValueMap().get("rent_area_id").toString());
+            if (creator == null) { //如果页面传入用户，则不取后台用户，保存则修改起草人为前台传入的用户
+                creator = contractEditVo.getValueMap().get("drafter_id") == null ? null : Integer.valueOf(contractEditVo.getValueMap().get("drafter_id").toString());
+            }
+            if (rentAreaId != null) {
 
                 List<RentSiteVo> rentSites = rentAreaService.getRentSiteByRentAreaId(rentAreaId);
-                modelMap.put("rentSites",rentSites);
-                log.debug("rentAreaId:{},rentSites数量",rentAreaId,rentSites.size());
+                modelMap.put("rentSites", rentSites);
+                log.debug("rentAreaId:{},rentSites数量", rentAreaId, rentSites.size());
             }
         } else {
             if (templateId != null) {
                 modelMap.put("templateId", templateId);
+                if (creator == null) {
+                    throw new BizException("请传入创建用户creator");
+                }
                 if (companyId != null) {
                     OnlineUserVo onlineUserVo = merchantCompanyService.getFounderByCompanyId(companyId);
                     modelMap.put("companyId", companyId);
