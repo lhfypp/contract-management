@@ -5,6 +5,7 @@ import com.snxy.contract.domain.ContractMajor;
 import com.snxy.contract.domain.ContractMetaData;
 import com.snxy.contract.service.ContractFieldService;
 import com.snxy.contract.service.ContractMajorService;
+import com.snxy.contract.service.vo.AppContractVo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
@@ -73,5 +74,13 @@ public class ContractMajorServiceImplTest {
         ContractMajor cm=ContractMajor.builder().companyMobile("111").merchantName("aaa").build();
 //        Long contractId=contractMajorService.insert(cm);
 //        log.debug(contractId.toString());
+    }
+    @Test
+    public void getAppContractVo(){
+        Long id=17L;
+        List<AppContractVo> appContractVos=contractMajorService.getAppContractVo(id);
+        appContractVos.forEach(ac->{
+            log.debug(ac.toString());
+        });
     }
 }

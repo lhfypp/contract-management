@@ -4,11 +4,12 @@ package com.snxy.contract.business.utils;
 import com.snxy.common.exception.BizException;
 import com.snxy.contract.domain.ContractMetaData;
 import com.snxy.contract.service.vo.JsContractMetaData;
-import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,11 +58,12 @@ public class ContractTemplateEngine {
 
     /**
      * 校验模版的有效性，在模版保存前调用，避免编辑模版错误<br>
+     *
      * @param template
      * @param contractMetaDatas
      * @return 校验结果，如果是空字符串，则成功，否则，提供详细的错误提示，以供修正
      */
-    public static String checkTemplateValid(String template, List<ContractMetaData> contractMetaDatas){
+    public static String checkTemplateValid(String template, List<ContractMetaData> contractMetaDatas) {
         throw new RuntimeException();
     }
 
@@ -249,6 +251,22 @@ public class ContractTemplateEngine {
             jsContractMetaDatas.add(jcmd);
         });
         return jsContractMetaDatas;
+    }
+
+    public static String getFieldValue(ContractMetaData contractMetaData, Map<String, Object> valueMap) {
+        String value = valueMap.get(contractMetaData.getCode()) == null ? "" : valueMap.get(contractMetaData.getCode()).toString();
+        if (contractMetaData.getControlType() == 2) {
+            String[] vts = contractMetaData.getDict().split(";");
+            for (String vt : vts) {
+                String[] valueText = vt.split(",");
+
+                if (valueText[0].equals(value)) {
+                    return valueText[1];
+                }
+
+            }
+        }
+        return value;
     }
 
 //    public static void main(String[] args) {

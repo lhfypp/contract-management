@@ -5,6 +5,7 @@ import com.snxy.common.response.ResultData;
 import com.snxy.contract.service.ContractMajorService;
 import com.snxy.contract.service.MerchantCompanyService;
 import com.snxy.contract.service.RentAreaService;
+import com.snxy.contract.service.vo.AppContractVo;
 import com.snxy.contract.service.vo.ContractEditVo;
 import com.snxy.contract.service.vo.OnlineUserVo;
 import com.snxy.contract.service.vo.RentSiteVo;
@@ -115,5 +116,12 @@ public class ContractController {
     public ResultData<List<RentSiteVo>> getRentSite(@RequestParam(value = "rentAreaId") Long rentAreaId) {
         List<RentSiteVo> rentSites = rentAreaService.getRentSiteByRentAreaId(rentAreaId);
         return ResultData.success(rentSites);
+    }
+
+    @RequestMapping(value = "/getAppContract")
+    @ResponseBody
+    public ResultData<List<AppContractVo>> getAppContractVo(@RequestParam(value = "id") Long id) {
+        List<AppContractVo> appContractVos = contractMajorService.getAppContractVo(id);
+        return ResultData.success(appContractVos);
     }
 }

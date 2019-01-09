@@ -10,6 +10,7 @@ import com.snxy.contract.service.ContractFieldResultService;
 import com.snxy.contract.service.ContractFieldService;
 import com.snxy.contract.service.ContractMajorService;
 import com.snxy.contract.service.ContractTemplateContentService;
+import com.snxy.contract.service.vo.AppContractVo;
 import com.snxy.contract.service.vo.ContractEditVo;
 import com.snxy.contract.service.vo.JsContractMetaData;
 import lombok.Builder;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -29,7 +31,10 @@ public class ContractMajorServiceImpl implements ContractMajorService {
     private final static int STATUS_DEFULT = 0;
     private final static int IS_VALAD_DEFAULT = 0;
 
-    private final static List<String> extraFields=Arrays.asList(
+    private final static String CATEGORY_DEFAULT = "合同信息";
+    private final static short CATEGORY_DEFAULT_ORDER = 100;
+
+    private final static List<String> extraFields = Arrays.asList(
             "id",
             "contract_no",
             "contract_template_category_id"
@@ -58,9 +63,9 @@ public class ContractMajorServiceImpl implements ContractMajorService {
         }
 
 
-        if (valueMap.get("id") != null&& StringUtils.isNotBlank(valueMap.get("id").toString())) {//合同id
+        if (valueMap.get("id") != null && StringUtils.isNotBlank(valueMap.get("id").toString())) {//合同id
             long contractMajorId = Long.parseLong(valueMap.get("id").toString());
-           return updateContract(creatorId, contractMajorId, contractMetaDatas, valueMap);
+            return updateContract(creatorId, contractMajorId, contractMetaDatas, valueMap);
         }
 
         return insertContract(creatorId, contractMetaDatas, valueMap);
@@ -77,8 +82,8 @@ public class ContractMajorServiceImpl implements ContractMajorService {
         extraMap.put("is_valid", String.valueOf(IS_VALAD_DEFAULT));
         extraMap.put("status", String.valueOf(STATUS_DEFULT));
         //合同模版id
-        extraMap.put("contract_template_category_id",valueMap.get("contract_template_category_id").toString());
-        addTime(valueMap,extraMap,true);
+        extraMap.put("contract_template_category_id", valueMap.get("contract_template_category_id").toString());
+        addTime(valueMap, extraMap, true);
         String insertSql = ContractSqlEngine.getMajorInsrtSql(contractMetaDatas, valueMap, extraMap);
 //        ContractMajor contractMajor = new ContractMajor();
         Map<String, Object> map = new HashMap<String, Object>();
@@ -90,7 +95,7 @@ public class ContractMajorServiceImpl implements ContractMajorService {
         Long contractMajorId = Long.valueOf(map.get("id").toString());
         List<ContractFieldResult> cfrs = ContractSqlEngine.getContractFileldResult(contractMetaDatas, valueMap, contractMajorId);
         //保存个性
-        if(cfrs.size()>0) {
+        if (cfrs.size() > 0) {
             contractFieldResultService.batchSave(cfrs);
         }
         return contractMajorId;
@@ -109,9 +114,9 @@ public class ContractMajorServiceImpl implements ContractMajorService {
 
     private Long updateContract(long creatorId, long contractMajorId, List<ContractMetaData> contractMetaDatas, Map<String, Object> valueMap) {
         Map<String, String> extraMap = new HashMap<>();
-        addTime(valueMap,extraMap,false);
-        String updateSql = ContractSqlEngine.getUpdateSql(contractMetaDatas, valueMap,extraMap, contractMajorId);
-        log.debug("updateSql:{}",updateSql);
+        addTime(valueMap, extraMap, false);
+        String updateSql = ContractSqlEngine.getUpdateSql(contractMetaDatas, valueMap, extraMap, contractMajorId);
+        log.debug("updateSql:{}", updateSql);
         //  List<ContractFieldResult> dbCfrs = contractFieldResultService.getByContractMajorId(contractMajorId);
         //简单处理，删除原来值，插入新的值
         List<ContractFieldResult> curCfrs = ContractSqlEngine.getContractFileldResult(contractMetaDatas, valueMap, contractMajorId);
@@ -119,7 +124,7 @@ public class ContractMajorServiceImpl implements ContractMajorService {
 
         contractMajorMapper.updateBySql(updateSql);
         contractFieldResultService.deleteByContractMajorId(contractMajorId);
-        if(curCfrs.size()>0) {
+        if (curCfrs.size() > 0) {
             contractFieldResultService.batchSave(curCfrs);
         }
         return contractMajorId;
@@ -152,7 +157,7 @@ public class ContractMajorServiceImpl implements ContractMajorService {
 
         Integer templateId = contractMajorMapper.getTemplateIdById(contractMajorId);//
         List<ContractMetaData> contractMetaDatas = contractFieldService.getContractMetaDataByTemplateId(templateId);
-        String selectSql = ContractSqlEngine.getSelectSql(contractMetaDatas, contractMajorId,extraFields);
+        String selectSql = ContractSqlEngine.getSelectSql(contractMetaDatas, contractMajorId, extraFields);
 
         Map<String, Object> valueMap = contractMajorMapper.selectBySql(selectSql);
 
@@ -170,48 +175,141 @@ public class ContractMajorServiceImpl implements ContractMajorService {
                 .template(template)
                 .valueMap(valueMap).build();
     }
-    private void addTime(Map<String, Object> valueMap, Map<String, String> extraMap,boolean isInsert) {
-         if(valueMap.get("rent_start_time_year")!=null&&StringUtils.isNotBlank(valueMap.get("rent_start_time_year").toString())
-                 &&valueMap.get("rent_start_time_month")!=null&&StringUtils.isNotBlank(valueMap.get("rent_start_time_month").toString())
-                 &&valueMap.get("rent_start_time_day")!=null&&StringUtils.isNotBlank(valueMap.get("rent_start_time_day").toString())){
-             extraMap.put("rent_start_time",valueMap.get("rent_start_time_year").toString()+"-"+
-                     valueMap.get("rent_start_time_month").toString()+"-"+
-                     valueMap.get("rent_start_time_day").toString()
-             );
-         }
-         else {
-             if(isInsert==false){
-                 extraMap.put("rent_start_time","");
-             }
-         }
 
-        if(valueMap.get("rent_end_time_year")!=null&&StringUtils.isNotBlank(valueMap.get("rent_end_time_year").toString())
-                &&valueMap.get("rent_end_time_month")!=null&&StringUtils.isNotBlank(valueMap.get("rent_end_time_month").toString())
-                &&valueMap.get("rent_end_time_day")!=null&&StringUtils.isNotBlank(valueMap.get("rent_end_time_day").toString())){
-            extraMap.put("rent_end_time",valueMap.get("rent_end_time_year").toString()+"-"+
-                    valueMap.get("rent_end_time_month").toString()+"-"+
+    private void addTime(Map<String, Object> valueMap, Map<String, String> extraMap, boolean isInsert) {
+        if (valueMap.get("rent_start_time_year") != null && StringUtils.isNotBlank(valueMap.get("rent_start_time_year").toString())
+                && valueMap.get("rent_start_time_month") != null && StringUtils.isNotBlank(valueMap.get("rent_start_time_month").toString())
+                && valueMap.get("rent_start_time_day") != null && StringUtils.isNotBlank(valueMap.get("rent_start_time_day").toString())) {
+            extraMap.put("rent_start_time", valueMap.get("rent_start_time_year").toString() + "-" +
+                    valueMap.get("rent_start_time_month").toString() + "-" +
+                    valueMap.get("rent_start_time_day").toString()
+            );
+        } else {
+            if (isInsert == false) {
+                extraMap.put("rent_start_time", "");
+            }
+        }
+
+        if (valueMap.get("rent_end_time_year") != null && StringUtils.isNotBlank(valueMap.get("rent_end_time_year").toString())
+                && valueMap.get("rent_end_time_month") != null && StringUtils.isNotBlank(valueMap.get("rent_end_time_month").toString())
+                && valueMap.get("rent_end_time_day") != null && StringUtils.isNotBlank(valueMap.get("rent_end_time_day").toString())) {
+            extraMap.put("rent_end_time", valueMap.get("rent_end_time_year").toString() + "-" +
+                    valueMap.get("rent_end_time_month").toString() + "-" +
                     valueMap.get("rent_end_time_day").toString()
             );
-        }
-        else {
-            if(isInsert==false){
-                extraMap.put("rent_end_time","");
+        } else {
+            if (isInsert == false) {
+                extraMap.put("rent_end_time", "");
             }
         }
 
-        if(valueMap.get("sign_time_year")!=null&&StringUtils.isNotBlank(valueMap.get("sign_time_year").toString())
-                &&valueMap.get("sign_time_month")!=null&&StringUtils.isNotBlank(valueMap.get("sign_time_month").toString())
-                &&valueMap.get("sign_time_day")!=null&&StringUtils.isNotBlank(valueMap.get("sign_time_day").toString())){
-            extraMap.put("sign_time",valueMap.get("sign_time_year").toString()+"-"+
-                    valueMap.get("sign_time_month").toString()+"-"+
+        if (valueMap.get("sign_time_year") != null && StringUtils.isNotBlank(valueMap.get("sign_time_year").toString())
+                && valueMap.get("sign_time_month") != null && StringUtils.isNotBlank(valueMap.get("sign_time_month").toString())
+                && valueMap.get("sign_time_day") != null && StringUtils.isNotBlank(valueMap.get("sign_time_day").toString())) {
+            extraMap.put("sign_time", valueMap.get("sign_time_year").toString() + "-" +
+                    valueMap.get("sign_time_month").toString() + "-" +
                     valueMap.get("sign_time_day").toString()
             );
-        }
-        else {
-            if(isInsert==false){
-                extraMap.put("sign_time","");
+        } else {
+            if (isInsert == false) {
+                extraMap.put("sign_time", "");
             }
         }
+    }
+
+    @Override
+    public List<AppContractVo> getAppContractVo(Long contractMajorId) {
+        ContractHelperResult contractHelperResult = getContractHelperResult(contractMajorId);
+        List<AppContractVo> appContractVos = contractHelperResult.contractMetaDatas.stream()
+                .map(cmd -> {
+                    String category = StringUtils.isNoneBlank(cmd.getCategory()) ? cmd.getCategory() : CATEGORY_DEFAULT;
+                    int order = cmd.getCategoryOrder() != null ? (int) cmd.getCategoryOrder() : CATEGORY_DEFAULT_ORDER;
+                    return AppContractVo.builder().category(category)
+                            .categoryOrder(order).build();
+                }).distinct().sorted(Comparator.comparingInt(AppContractVo::getCategoryOrder)).collect(Collectors.toList());
+
+        Map<String, String> extraMap = new HashMap<>();//时间
+        List<TimeHelperResult> timeHelperResults = dealTime(contractHelperResult, extraMap);
+
+        appContractVos.forEach(ac -> {
+            ac.setFieldValues(
+                    contractHelperResult.contractMetaDatas.stream().filter(cmd -> {
+                        String category = StringUtils.isNoneBlank(cmd.getCategory()) ? cmd.getCategory() : CATEGORY_DEFAULT;
+                        return category.equals(ac.getCategory());
+                    }).map(cmd -> {
+                        ///TODO  生成对象，获取值，尤其对时间处理需要考虑
+
+                        String value = ContractTemplateEngine.getFieldValue(cmd,contractHelperResult.getValueMap());//contractHelperResult.getValueMap().get(cmd.getCode()) == null ? "" : contractHelperResult.getValueMap().get(cmd.getCode()).toString();
+                        int order = cmd.getShowOrder() == null ? Integer.MAX_VALUE : cmd.getShowOrder().intValue();
+                        return AppContractVo.FieldValue.builder().code(cmd.getCode()).name(cmd.getName()).value(value).fieldOrder(order).build();
+                    })
+                            //统一排序
+                            //.sorted(Comparator.comparingInt(AppContractVo.FieldValue::getFieldOrder))
+                            .collect(Collectors.toList()));
+        });
+        //简化处理，时间放到默认的"合同信息"最前
+        timeHelperResults.forEach(tr -> {
+            AppContractVo appContractVo = appContractVos.stream().filter(ac -> tr.getCategory().equals(ac.getCategory())).findFirst().orElse(null);
+            appContractVo.getFieldValues().add(
+                    AppContractVo.FieldValue.builder().code(tr.getCode()).name(tr.getName()).value(tr.getValue()).fieldOrder(tr.getOrder()).build()
+            );
+        });
+        appContractVos.forEach(ac -> {
+            ac.getFieldValues().sort(Comparator.comparingInt(AppContractVo.FieldValue::getFieldOrder));
+        });
+        return appContractVos;
+    }
+
+    private List<TimeHelperResult> dealTime(ContractHelperResult contractHelperResult, Map<String, String> extraMap) {
+
+        List<TimeHelperResult> timeHelperResults = new ArrayList<>();
+        Map<String, Object> valueMap = contractHelperResult.getValueMap();
+        addTime(valueMap, extraMap, false);
+        valueMap.remove("rent_start_time_year");
+        valueMap.remove("rent_start_time_month");
+        valueMap.remove("rent_start_time_day");
+        valueMap.remove("rent_end_time_year");
+        valueMap.remove("rent_end_time_month");
+        valueMap.remove("rent_end_time_day");
+        valueMap.remove("sign_time_year");
+        valueMap.remove("sign_time_month");
+        valueMap.remove("sign_time_day");
+        List<ContractMetaData> contractMetaDatas = contractHelperResult.getContractMetaDatas();
+
+        ///todo
+        extraMap.forEach((k, v) -> {
+            String code = k + "_year";
+            ContractMetaData contractMetaData = contractMetaDatas.parallelStream().filter(cmd -> code.equals(cmd.getCode())).findFirst().orElse(null);
+            String category = contractMetaData.getCategory() == null ? CATEGORY_DEFAULT : contractMetaData.getCategory();
+            String name = contractMetaData.getName().substring(0,contractMetaData.getName().length()-1);
+            int order = contractMetaData.getShowOrder() == null ? Integer.MAX_VALUE : contractMetaData.getShowOrder().intValue();
+            timeHelperResults.add(
+                    TimeHelperResult.builder()
+                            .category(category)
+                            .code(code)
+                            .value(v)
+                            .name(name)
+                            .order(order)
+                            .build()
+            );
+        });
+        for (int i = contractMetaDatas.size() - 1; i >= 0; i--) {
+            String code = contractMetaDatas.get(i).getCode();
+            if (code.equals("rent_start_time_year")
+                    || code.equals("rent_start_time_month")
+                    || code.equals("rent_start_time_day")
+                    || code.equals("rent_end_time_year")
+                    || code.equals("rent_end_time_month")
+                    || code.equals("rent_end_time_day")
+                    || code.equals("sign_time_year")
+                    || code.equals("sign_time_month")
+                    || code.equals("sign_time_day")) {
+                log.debug("index[{}],code[{}]",i,code);
+                contractMetaDatas.remove(i);
+              //  i--;
+            }
+        }
+        return timeHelperResults;
     }
 
     @Data
@@ -220,5 +318,15 @@ public class ContractMajorServiceImpl implements ContractMajorService {
         Map<String, Object> valueMap;
         String template;
         List<ContractMetaData> contractMetaDatas;
+    }
+
+    @Data
+    @Builder
+    private static class TimeHelperResult {
+        private String category;
+        private String code;
+        private String name;
+        private String value;
+        private int order;
     }
 }

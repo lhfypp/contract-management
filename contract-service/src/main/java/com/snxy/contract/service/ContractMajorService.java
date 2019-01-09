@@ -1,8 +1,10 @@
 package com.snxy.contract.service;
 
 import com.snxy.contract.domain.ContractMajor;
+import com.snxy.contract.service.vo.AppContractVo;
 import com.snxy.contract.service.vo.ContractEditVo;
 
+import java.util.List;
 import java.util.Map;
 
 public interface ContractMajorService {
@@ -27,8 +29,6 @@ public interface ContractMajorService {
      */
     ContractEditVo contractAdd (Integer templateId);
     String getContractView(Long contractMajorId);
-//    Long insertContract(long creatorId,int templateCategoryId, Map<String, Object> valueMap);
 
-
-//    Long updateContract(long creatorId,long contractMajorId,int templateCategoryId,Map<String, Object> valueMap);
+    List<AppContractVo> getAppContractVo(Long contractMajorId);
 }
