@@ -169,7 +169,7 @@ public class ContractMajorServiceImpl implements ContractMajorService {
         cfrs.parallelStream().forEach(cfr -> {
             ContractMetaData contractMetaData = contractMetaDatas.parallelStream().filter(cmd -> cmd.getId().equals(cfr.getContractFieldId())).findFirst().orElse(null);
             if (contractMetaData == null) {
-                throw new BizException(String.format("合同%个性化存储属性值找不到字段定义", contractMajorId));
+                throw new BizException(String.format("合同%d个性化存储属性值找不到字段定义%d", contractMajorId, cfr.getContractFieldId()));
             }
             valueMap.put(contractMetaData.getCode(), cfr.getFieldValue());
         });
@@ -225,7 +225,16 @@ public class ContractMajorServiceImpl implements ContractMajorService {
     @Override
     public List<AppContractVo> getAppContractVo(Long contractMajorId) {
         ContractHelperResult contractHelperResult = getContractHelperResult(contractMajorId);
-        List<AppContractVo> appContractVos = contractHelperResult.contractMetaDatas.stream()
+        //去掉app不可见字段
+        List<ContractMetaData> contractMetaDatas = contractHelperResult.contractMetaDatas;
+        for (int i = contractMetaDatas.size() - 1; i >= 0; i--) {
+            //null 为默认可见, 0,不可见，即是除了0外,都可见
+            int appVisible = contractMetaDatas.get(i).getAppVisible() == null ? 1 : contractMetaDatas.get(i).getAppVisible().intValue();
+            if (appVisible == 0) {
+                contractMetaDatas.remove(i);
+            }
+        }
+        List<AppContractVo> appContractVos = contractMetaDatas.stream()
                 .map(cmd -> {
                     String category = StringUtils.isNoneBlank(cmd.getCategory()) ? cmd.getCategory() : CATEGORY_DEFAULT;
                     int order = cmd.getCategoryOrder() != null ? (int) cmd.getCategoryOrder() : CATEGORY_DEFAULT_ORDER;
@@ -240,7 +249,7 @@ public class ContractMajorServiceImpl implements ContractMajorService {
         dealIdForName(contractHelperResult.getValueMap());
         appContractVos.forEach(ac -> {
             ac.setFieldValues(
-                    contractHelperResult.contractMetaDatas.stream().filter(cmd -> {
+                    contractMetaDatas.stream().filter(cmd -> {
                         String category = StringUtils.isNoneBlank(cmd.getCategory()) ? cmd.getCategory() : CATEGORY_DEFAULT;
                         return category.equals(ac.getCategory());
                     }).map(cmd -> {

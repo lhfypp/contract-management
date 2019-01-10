@@ -54,4 +54,5 @@ public class ContractMetaData {
 
     private Byte isDelete;
 
+    private Byte appVisible;
 }

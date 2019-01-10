@@ -18,6 +18,7 @@
     <result column="control_type" jdbcType="INTEGER" property="controlType" />
     <result column="dict" jdbcType="VARCHAR" property="dict" />
     <result column="default_value" jdbcType="VARCHAR" property="defaultValue" />
+    <result column="app_visible" jdbcType="TINYINT" property="appVisible" />
     <result column="template_id" jdbcType="TINYINT" property="templateId" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
@@ -27,7 +28,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, code, name, is_common, allow_null, data_type, check_regex, css_name, width, height, 
-    show_order, category, category_order, control_type, dict, default_value, template_id, 
+    show_order, category, category_order, control_type, dict, default_value, app_visible,template_id,
     gmt_create, gmt_modified, creator_id, modifier_id, is_delete
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -48,7 +49,7 @@
       allow_null, data_type, check_regex, 
       css_name, width, height, 
       show_order, category, category_order, 
-      control_type, dict, default_value, 
+      control_type, dict, default_value, app_visible,
       template_id, gmt_create, gmt_modified, 
       creator_id, modifier_id, is_delete
       )
@@ -56,7 +57,7 @@
       #{allowNull,jdbcType=INTEGER}, #{dataType,jdbcType=INTEGER}, #{checkRegex,jdbcType=VARCHAR}, 
       #{cssName,jdbcType=VARCHAR}, #{width,jdbcType=INTEGER}, #{height,jdbcType=INTEGER}, 
       #{showOrder,jdbcType=SMALLINT}, #{category,jdbcType=VARCHAR}, #{categoryOrder,jdbcType=SMALLINT}, 
-      #{controlType,jdbcType=INTEGER}, #{dict,jdbcType=VARCHAR}, #{defaultValue,jdbcType=VARCHAR}, 
+      #{controlType,jdbcType=INTEGER}, #{dict,jdbcType=VARCHAR}, #{defaultValue,jdbcType=VARCHAR}, , #{appVisible,jdbcType=TINYINT}
       #{templateId,jdbcType=BIGINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, 
       #{creatorId,jdbcType=BIGINT}, #{modifierId,jdbcType=BIGINT}, #{isDelete,jdbcType=TINYINT}
       )
@@ -111,6 +112,9 @@
       </if>
       <if test="defaultValue != null">
         default_value,
+      </if>
+      <if test="appVisible != null">
+        app_visible,
       </if>
       <if test="templateId != null">
         template_id,
@@ -176,6 +180,9 @@
       </if>
       <if test="defaultValue != null">
         #{defaultValue,jdbcType=VARCHAR},
+      </if>
+      <if test="appVisible != null">
+        #{appVisible,jdbcType=TINYINT},
       </if>
       <if test="templateId != null">
         #{templateId,jdbcType=BIGINT},
@@ -245,6 +252,9 @@
       <if test="defaultValue != null">
         default_value = #{defaultValue,jdbcType=VARCHAR},
       </if>
+      <if test="appVisible != null">
+        app_visible = #{appVisible,jdbcType=TINYINT},
+      </if>
       <if test="templateId != null">
         template_id = #{templateId,jdbcType=BIGINT},
       </if>
@@ -283,6 +293,7 @@
       control_type = #{controlType,jdbcType=INTEGER},
       dict = #{dict,jdbcType=VARCHAR},
       default_value = #{defaultValue,jdbcType=VARCHAR},
+       app_visible = #{appVisible,jdbcType=TINYINT},
       template_id = #{templateId,jdbcType=BIGINT},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
