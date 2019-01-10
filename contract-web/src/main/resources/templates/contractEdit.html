@@ -6,6 +6,7 @@
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
     <link th:href="@{/css/bootstrap-select.min.css}" rel="stylesheet"/>
     <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/jQuery.print.min.js}"></script>
     <script th:src="@{/js/bootstrap.min.js}"></script>
     <script th:src="@{/js/bootstrap-select.min.js}"></script>
     <style type="text/css">
@@ -46,7 +47,7 @@
             margin: 5px 0;
         }
 
-        #btnSave {
+        .mybtn button {
             background: #1c84c6;
             border: 0;
             border-radius: 5px;
@@ -89,9 +90,11 @@
         </select>
     </div>
 </div>
-<div id="contract" th:utext="${contractEdit}" style="margin: 0 auto;width: 1200px"></div>
+<div id="contract" th:utext="${contractEdit}" style="margin: 0 auto;width: 800px"></div>
 <div class="mybtn">
     <button type="button" id="btnSave">保存</button>
+    <button type="button"    id="btnPrint">打印</button>
+    <button type="button"    id="btnExport">导出</button>
 </div>
 </body>
 <script th:inline="javascript">
@@ -330,6 +333,22 @@
     }
     //endregion
 
+    //打印
+    $('#btnPrint').click(
+        function () {
+            $('#contract').print({
+                    //Use Global styles
+                    globalStyles : true,
+                    mediaPrint : false,
+                    iframe : false,
+                    //Don't print this
+                    noPrintSelector : ".avoid-this",
+                    deferred: $.Deferred().done(function() { console.log('Printing done', arguments); })
+                }
+
+            );
+        }
+    );
 
 </script>
 </html>

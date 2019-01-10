@@ -180,16 +180,16 @@ public class ContractMajorServiceImpl implements ContractMajorService {
                 .valueMap(valueMap).build();
     }
 
-    private void addTime(Map<String, Object> valueMap, Map<String, String> extraMap, boolean isInsert) {
+    private void addTime(Map<String, Object> valueMap, Map<String, String> extraMap, boolean needDefault) {
         if (valueMap.get("rent_start_time_year") != null && StringUtils.isNotBlank(valueMap.get("rent_start_time_year").toString())
                 && valueMap.get("rent_start_time_month") != null && StringUtils.isNotBlank(valueMap.get("rent_start_time_month").toString())
                 && valueMap.get("rent_start_time_day") != null && StringUtils.isNotBlank(valueMap.get("rent_start_time_day").toString())) {
-            extraMap.put("rent_start_time", valueMap.get("rent_start_time_year").toString() + "-" +
-                    valueMap.get("rent_start_time_month").toString() + "-" +
+            extraMap.put("rent_start_time", valueMap.get("rent_start_time_year").toString() + "/" +
+                    valueMap.get("rent_start_time_month").toString() + "/" +
                     valueMap.get("rent_start_time_day").toString()
             );
         } else {
-            if (isInsert == false) {
+            if (needDefault == false) {
                 extraMap.put("rent_start_time", "");
             }
         }
@@ -197,12 +197,12 @@ public class ContractMajorServiceImpl implements ContractMajorService {
         if (valueMap.get("rent_end_time_year") != null && StringUtils.isNotBlank(valueMap.get("rent_end_time_year").toString())
                 && valueMap.get("rent_end_time_month") != null && StringUtils.isNotBlank(valueMap.get("rent_end_time_month").toString())
                 && valueMap.get("rent_end_time_day") != null && StringUtils.isNotBlank(valueMap.get("rent_end_time_day").toString())) {
-            extraMap.put("rent_end_time", valueMap.get("rent_end_time_year").toString() + "-" +
-                    valueMap.get("rent_end_time_month").toString() + "-" +
+            extraMap.put("rent_end_time", valueMap.get("rent_end_time_year").toString() + "/" +
+                    valueMap.get("rent_end_time_month").toString() + "/" +
                     valueMap.get("rent_end_time_day").toString()
             );
         } else {
-            if (isInsert == false) {
+            if (needDefault == false) {
                 extraMap.put("rent_end_time", "");
             }
         }
@@ -210,12 +210,12 @@ public class ContractMajorServiceImpl implements ContractMajorService {
         if (valueMap.get("sign_time_year") != null && StringUtils.isNotBlank(valueMap.get("sign_time_year").toString())
                 && valueMap.get("sign_time_month") != null && StringUtils.isNotBlank(valueMap.get("sign_time_month").toString())
                 && valueMap.get("sign_time_day") != null && StringUtils.isNotBlank(valueMap.get("sign_time_day").toString())) {
-            extraMap.put("sign_time", valueMap.get("sign_time_year").toString() + "-" +
-                    valueMap.get("sign_time_month").toString() + "-" +
+            extraMap.put("sign_time", valueMap.get("sign_time_year").toString() + "/" +
+                    valueMap.get("sign_time_month").toString() + "/" +
                     valueMap.get("sign_time_day").toString()
             );
         } else {
-            if (isInsert == false) {
+            if (needDefault == false) {
                 extraMap.put("sign_time", "");
             }
         }
@@ -302,22 +302,60 @@ public class ContractMajorServiceImpl implements ContractMajorService {
         List<ContractMetaData> contractMetaDatas = contractHelperResult.getContractMetaDatas();
 
         ///todo
-        extraMap.forEach((k, v) -> {
-            String code = k + "_year";
-            ContractMetaData contractMetaData = contractMetaDatas.parallelStream().filter(cmd -> code.equals(cmd.getCode())).findFirst().orElse(null);
-            String category = contractMetaData.getCategory() == null ? CATEGORY_DEFAULT : contractMetaData.getCategory();
-            String name = contractMetaData.getName().substring(0, contractMetaData.getName().length() - 1);
-            int order = contractMetaData.getShowOrder() == null ? Integer.MAX_VALUE : contractMetaData.getShowOrder().intValue();
-            timeHelperResults.add(
-                    TimeHelperResult.builder()
-                            .category(category)
-                            .code(code)
-                            .value(v)
-                            .name(name)
-                            .order(order)
-                            .build()
-            );
-        });
+//        extraMap.forEach((k, v) -> {
+//            String code = k + "_year";
+//            ContractMetaData contractMetaData = contractMetaDatas.parallelStream().filter(cmd -> code.equals(cmd.getCode())).findFirst().orElse(null);
+//            String category = contractMetaData.getCategory() == null ? CATEGORY_DEFAULT : contractMetaData.getCategory();
+//            String name = contractMetaData.getName().substring(0, contractMetaData.getName().length() - 1);
+//            int order = contractMetaData.getShowOrder() == null ? Integer.MAX_VALUE : contractMetaData.getShowOrder().intValue();
+//            timeHelperResults.add(
+//                    TimeHelperResult.builder()
+//                            .category(category)
+//                            .code(code)
+//                            .value(v)
+//                            .name(name)
+//                            .order(order)
+//                            .build()
+//            );
+//        });
+        //合同起止时间
+        String startTime = extraMap.get("rent_start_time");
+        String endTime = extraMap.get("rent_end_time");
+        String stCode = "rent_start_time_year";
+        ContractMetaData stcmd = contractMetaDatas.parallelStream().filter(cmd -> stCode.equals(cmd.getCode())).findFirst().orElse(null);
+        String stCategory = stcmd.getCategory() == null ? CATEGORY_DEFAULT : stcmd.getCategory();
+        //     String name = stcmd.getName().substring(0, stcmd.getName().length() - 1);
+        int stOrder = stcmd.getShowOrder() == null ? Integer.MAX_VALUE : stcmd.getShowOrder().intValue();
+        String startEndTime;
+        if (StringUtils.isEmpty(startTime) || StringUtils.isEmpty(endTime)) {
+            startEndTime = startTime + endTime;
+        } else {
+            startEndTime = startTime + "至" + endTime;
+        }
+        timeHelperResults.add(
+                TimeHelperResult.builder()
+                        .category(stCategory)
+                        .code(stCode)
+                        .value(startEndTime)
+                        .name("合同起止时间")
+                        .order(stOrder)
+                        .build()
+        );
+        //合同签订时间
+        String signTimeCode = "sign_time_year";
+        ContractMetaData contractMetaData = contractMetaDatas.parallelStream().filter(cmd -> signTimeCode.equals(cmd.getCode())).findFirst().orElse(null);
+        String category = contractMetaData.getCategory() == null ? CATEGORY_DEFAULT : contractMetaData.getCategory();
+        String name = contractMetaData.getName().substring(0, contractMetaData.getName().length() - 1);
+        int order = contractMetaData.getShowOrder() == null ? Integer.MAX_VALUE : contractMetaData.getShowOrder().intValue();
+        timeHelperResults.add(
+                TimeHelperResult.builder()
+                        .category(category)
+                        .code(signTimeCode)
+                        .value(extraMap.get(signTimeCode))
+                        .name(name)
+                        .order(order)
+                        .build()
+        );
         for (int i = contractMetaDatas.size() - 1; i >= 0; i--) {
             String code = contractMetaDatas.get(i).getCode();
             if (code.equals("rent_start_time_year")

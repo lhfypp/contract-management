@@ -4,17 +4,60 @@
     <meta charset="UTF-8">
     <title>合同浏览</title>
     <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/jQuery.print.min.js}"></script>
     <style type="text/css">
-        input {border:none;}
-        .cc{padding: 0px;margin: 0px; outline: 0px;line-height:26px; border-bottom: 1px solid #333333;text-align:center;}
+        /*input {border:none;}*/
+        /*.cc{padding: 0px;margin: 0px; outline: 0px;line-height:26px; border-bottom: 1px solid #333333;text-align:center;}*/
+        .cc {
+            padding: 0px;
+            margin: 0px;
+            outline: 0px;
+            /*line-height: 26px;*/
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom: 1px solid #333333;
+            text-align: center;
+        }
+
+        .mybtn {
+            text-align: center;
+            margin: 5px 0;
+        }
+
+        .mybtn button {
+            background: #1c84c6;
+            border: 0;
+            border-radius: 5px;
+            color: #fff;
+            padding: 4px 10px;
+        }
     </style>
 </head>
 <body >
-<div id="contract" th:utext="${contractView}" style="margin: 0 auto;width: 1200px "> </div>
-<div><button type="button"    id="btnPrint">打印</button><button type="button"    id="btnExport">导出</button></div>
+<div id="contract" th:utext="${contractView}" style="margin: 0 auto;width: 800px "> </div>
+<div class="mybtn">
+    <button type="button"    id="btnPrint">打印</button><button type="button"    id="btnExport">导出</button>
+</div>
 </body>
 <script  th:inline="javascript">
+  $(function () {
+      $('#btnPrint').click(
+          function () {
+             $('#contract').print({
+                 //Use Global styles
+                 globalStyles : false,
+                 mediaPrint : false,
+                 iframe : false,
+                 //Don't print this
+                 noPrintSelector : ".avoid-this",
+                 deferred: $.Deferred().done(function() { console.log('Printing done', arguments); })
+                 }
 
+             );
+          }
+      );
+  })
 //     $('#btnSave').click(
 //         function () {
 //             var data={};
