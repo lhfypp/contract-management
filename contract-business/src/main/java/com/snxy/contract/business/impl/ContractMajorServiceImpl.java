@@ -6,10 +6,9 @@ import com.snxy.contract.business.utils.ContractTemplateEngine;
 import com.snxy.contract.dao.mapper.ContractMajorMapper;
 import com.snxy.contract.domain.ContractFieldResult;
 import com.snxy.contract.domain.ContractMetaData;
-import com.snxy.contract.service.ContractFieldResultService;
-import com.snxy.contract.service.ContractFieldService;
-import com.snxy.contract.service.ContractMajorService;
-import com.snxy.contract.service.ContractTemplateContentService;
+import com.snxy.contract.domain.MerchantCompany;
+import com.snxy.contract.domain.RentArea;
+import com.snxy.contract.service.*;
 import com.snxy.contract.service.vo.AppContractVo;
 import com.snxy.contract.service.vo.ContractEditVo;
 import com.snxy.contract.service.vo.JsContractMetaData;
@@ -49,6 +48,10 @@ public class ContractMajorServiceImpl implements ContractMajorService {
     private ContractFieldResultService contractFieldResultService;
     @Resource
     private ContractTemplateContentService contractTemplateContentService;
+    @Resource
+    private MerchantCompanyService merchantCompanyService;
+    @Resource
+    private RentAreaService rentAreaService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -218,6 +221,7 @@ public class ContractMajorServiceImpl implements ContractMajorService {
         }
     }
 
+    //region APP数据
     @Override
     public List<AppContractVo> getAppContractVo(Long contractMajorId) {
         ContractHelperResult contractHelperResult = getContractHelperResult(contractMajorId);
@@ -230,8 +234,10 @@ public class ContractMajorServiceImpl implements ContractMajorService {
                 }).distinct().sorted(Comparator.comparingInt(AppContractVo::getCategoryOrder)).collect(Collectors.toList());
 
         Map<String, String> extraMap = new HashMap<>();//时间
+        //处理时间，并删除年月日的元数据,添加整合的年月日
         List<TimeHelperResult> timeHelperResults = dealTime(contractHelperResult, extraMap);
-
+        //id字段替换为名称 （商户公司，区域）
+        dealIdForName(contractHelperResult.getValueMap());
         appContractVos.forEach(ac -> {
             ac.setFieldValues(
                     contractHelperResult.contractMetaDatas.stream().filter(cmd -> {
@@ -240,7 +246,7 @@ public class ContractMajorServiceImpl implements ContractMajorService {
                     }).map(cmd -> {
                         ///TODO  生成对象，获取值，尤其对时间处理需要考虑
 
-                        String value = ContractTemplateEngine.getFieldValue(cmd,contractHelperResult.getValueMap());//contractHelperResult.getValueMap().get(cmd.getCode()) == null ? "" : contractHelperResult.getValueMap().get(cmd.getCode()).toString();
+                        String value = ContractTemplateEngine.getFieldValue(cmd, contractHelperResult.getValueMap());//contractHelperResult.getValueMap().get(cmd.getCode()) == null ? "" : contractHelperResult.getValueMap().get(cmd.getCode()).toString();
                         int order = cmd.getShowOrder() == null ? Integer.MAX_VALUE : cmd.getShowOrder().intValue();
                         return AppContractVo.FieldValue.builder().code(cmd.getCode()).name(cmd.getName()).value(value).fieldOrder(order).build();
                     })
@@ -259,6 +265,24 @@ public class ContractMajorServiceImpl implements ContractMajorService {
             ac.getFieldValues().sort(Comparator.comparingInt(AppContractVo.FieldValue::getFieldOrder));
         });
         return appContractVos;
+    }
+
+    private void dealIdForName(Map<String, Object> valueMap) {
+        if (valueMap.get("company_id") != null) {
+            Long companyId = Long.valueOf(valueMap.get("company_id").toString());
+            MerchantCompany mc = merchantCompanyService.getMerchantCompanyById(companyId);
+            if (mc != null) {
+                valueMap.put("company_id", mc.getMerchantName());
+            }
+        }
+
+        if (valueMap.get("rent_area_id") != null) {
+            Long rentAreaId = Long.valueOf(valueMap.get("rent_area_id").toString());
+            RentArea rentArea = rentAreaService.getRentAreaById(rentAreaId);
+            if (rentArea != null) {
+                valueMap.put("rent_area_id", rentArea.getAreaName());
+            }
+        }
     }
 
     private List<TimeHelperResult> dealTime(ContractHelperResult contractHelperResult, Map<String, String> extraMap) {
@@ -282,7 +306,7 @@ public class ContractMajorServiceImpl implements ContractMajorService {
             String code = k + "_year";
             ContractMetaData contractMetaData = contractMetaDatas.parallelStream().filter(cmd -> code.equals(cmd.getCode())).findFirst().orElse(null);
             String category = contractMetaData.getCategory() == null ? CATEGORY_DEFAULT : contractMetaData.getCategory();
-            String name = contractMetaData.getName().substring(0,contractMetaData.getName().length()-1);
+            String name = contractMetaData.getName().substring(0, contractMetaData.getName().length() - 1);
             int order = contractMetaData.getShowOrder() == null ? Integer.MAX_VALUE : contractMetaData.getShowOrder().intValue();
             timeHelperResults.add(
                     TimeHelperResult.builder()
@@ -305,13 +329,14 @@ public class ContractMajorServiceImpl implements ContractMajorService {
                     || code.equals("sign_time_year")
                     || code.equals("sign_time_month")
                     || code.equals("sign_time_day")) {
-                log.debug("index[{}],code[{}]",i,code);
+                log.debug("index[{}],code[{}]", i, code);
                 contractMetaDatas.remove(i);
-              //  i--;
+                //  i--;
             }
         }
         return timeHelperResults;
     }
+    //endregion
 
     @Data
     @Builder

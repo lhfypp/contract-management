@@ -1,5 +1,6 @@
 package com.snxy.contract.service;
 
+import com.snxy.contract.domain.MerchantCompany;
 import com.snxy.contract.service.vo.MerchantCompanyVo;
 import com.snxy.contract.service.vo.OnlineUserVo;
 
@@ -14,4 +15,6 @@ public interface MerchantCompanyService {
     List<MerchantCompanyVo> listByCompanyName(String companyName);
 
     OnlineUserVo getFounderByCompanyId(Integer companyId);
+
+    MerchantCompany getMerchantCompanyById(Long companyId);
 }

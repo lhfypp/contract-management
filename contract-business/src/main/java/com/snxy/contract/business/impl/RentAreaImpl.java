@@ -50,4 +50,9 @@ public class RentAreaImpl implements RentAreaService {
 
         return rentSiteVos;
     }
+
+    @Override
+    public RentArea getRentAreaById(Long rentAreaId) {
+        return rentAreaMapper.selectByPrimaryKey(rentAreaId);
+    }
 }

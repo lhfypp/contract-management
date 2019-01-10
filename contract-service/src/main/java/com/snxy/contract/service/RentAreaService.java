@@ -1,5 +1,6 @@
 package com.snxy.contract.service;
 
+import com.snxy.contract.domain.RentArea;
 import com.snxy.contract.service.vo.RentAreaVo;
 import com.snxy.contract.service.vo.RentSiteVo;
 
@@ -12,4 +13,6 @@ public interface RentAreaService {
     List<RentAreaVo> list();
 
     List<RentSiteVo> getRentSiteByRentAreaId(Long rentAreaId);
+
+    RentArea getRentAreaById(Long rentId);
 }

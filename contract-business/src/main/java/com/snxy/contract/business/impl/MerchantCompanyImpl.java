@@ -57,4 +57,9 @@ public class MerchantCompanyImpl implements MerchantCompanyService {
         BeanUtils.copyProperties(user,onlineUserVo);
         return onlineUserVo;
     }
+
+    @Override
+    public MerchantCompany getMerchantCompanyById(Long companyId) {
+        return merchantCompanyMapper.selectByPrimaryKey(companyId);
+    }
 }
