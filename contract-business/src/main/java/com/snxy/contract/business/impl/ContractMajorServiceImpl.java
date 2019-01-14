@@ -332,39 +332,44 @@ public class ContractMajorServiceImpl implements ContractMajorService {
         String endTime = extraMap.get("rent_end_time");
         String stCode = "rent_start_time_year";
         ContractMetaData stcmd = contractMetaDatas.parallelStream().filter(cmd -> stCode.equals(cmd.getCode())).findFirst().orElse(null);
-        String stCategory = stcmd.getCategory() == null ? CATEGORY_DEFAULT : stcmd.getCategory();
-        //     String name = stcmd.getName().substring(0, stcmd.getName().length() - 1);
-        int stOrder = stcmd.getShowOrder() == null ? Integer.MAX_VALUE : stcmd.getShowOrder().intValue();
-        String startEndTime;
-        if (StringUtils.isEmpty(startTime) || StringUtils.isEmpty(endTime)) {
-            startEndTime = startTime + endTime;
-        } else {
-            startEndTime = startTime + "至" + endTime;
+        if(stcmd!=null) {
+            String stCategory = stcmd.getCategory() == null ? CATEGORY_DEFAULT : stcmd.getCategory();
+            //     String name = stcmd.getName().substring(0, stcmd.getName().length() - 1);
+            int stOrder = stcmd.getShowOrder() == null ? Integer.MAX_VALUE : stcmd.getShowOrder().intValue();
+            String startEndTime;
+            if (StringUtils.isEmpty(startTime) || StringUtils.isEmpty(endTime)) {
+                startEndTime = startTime + endTime;
+            } else {
+                startEndTime = startTime + "至" + endTime;
+            }
+            timeHelperResults.add(
+                    TimeHelperResult.builder()
+                            .category(stCategory)
+                            .code(stCode)
+                            .value(startEndTime)
+                            .name("合同起止时间")
+                            .order(stOrder)
+                            .build()
+            );
         }
-        timeHelperResults.add(
-                TimeHelperResult.builder()
-                        .category(stCategory)
-                        .code(stCode)
-                        .value(startEndTime)
-                        .name("合同起止时间")
-                        .order(stOrder)
-                        .build()
-        );
         //合同签订时间
         String signTimeCode = "sign_time_year";
         ContractMetaData contractMetaData = contractMetaDatas.parallelStream().filter(cmd -> signTimeCode.equals(cmd.getCode())).findFirst().orElse(null);
-        String category = contractMetaData.getCategory() == null ? CATEGORY_DEFAULT : contractMetaData.getCategory();
-        String name = contractMetaData.getName().substring(0, contractMetaData.getName().length() - 1);
-        int order = contractMetaData.getShowOrder() == null ? Integer.MAX_VALUE : contractMetaData.getShowOrder().intValue();
-        timeHelperResults.add(
-                TimeHelperResult.builder()
-                        .category(category)
-                        .code(signTimeCode)
-                        .value(extraMap.get(signTimeCode))
-                        .name(name)
-                        .order(order)
-                        .build()
-        );
+        if(contractMetaData!=null) {
+            String category = contractMetaData.getCategory() == null ? CATEGORY_DEFAULT : contractMetaData.getCategory();
+            String name = contractMetaData.getName().substring(0, contractMetaData.getName().length() - 1);
+            int order = contractMetaData.getShowOrder() == null ? Integer.MAX_VALUE : contractMetaData.getShowOrder().intValue();
+            timeHelperResults.add(
+                    TimeHelperResult.builder()
+                            .category(category)
+                            .code(signTimeCode)
+                            .value(extraMap.get(signTimeCode))
+                            .name(name)
+                            .order(order)
+                            .build()
+            );
+        }
+
         for (int i = contractMetaDatas.size() - 1; i >= 0; i--) {
             String code = contractMetaDatas.get(i).getCode();
             if (code.equals("rent_start_time_year")
