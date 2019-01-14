@@ -24,7 +24,7 @@
         }
 
         .box {
-             /*text-align: left;*/
+            /*text-align: left;*/
             margin: 5px 0;
         }
 
@@ -93,8 +93,8 @@
 <div id="contract" th:utext="${contractEdit}" style="margin: 0 auto;width: 800px"></div>
 <div class="mybtn">
     <button type="button" id="btnSave">保存</button>
-    <button type="button"    id="btnPrint">打印</button>
-    <button type="button"    id="btnExport">导出</button>
+    <button type="button" id="btnPrint">打印</button>
+    <button type="button" id="btnExport">返回</button>
 </div>
 </body>
 <script th:inline="javascript">
@@ -120,7 +120,7 @@
         //设置页面按钮居中
         var width = $(document.body).width();
         //第一行累加宽度是530左右
-        $('.box').css({"margin-left":((width-600)/2)+"px"});
+        $('.box').css({"margin-left": ((width - 600) / 2) + "px"});
         if (onlineUserVo) {
             //company_id
             $('#company_id').val(company_id);
@@ -258,7 +258,7 @@
                     if (!value) {
                         allowSubmit = false;
                         alert(metaData.name + "不允许为空");
-                        $('#txt_'+metaData.code).focus();
+                        $('#txt_' + metaData.code).focus();
                         return false;
                     }
                 }
@@ -268,7 +268,7 @@
                     if (isNaN(value)) {
                         allowSubmit = false;
                         alert(metaData.name + "需要填写数字");
-                        $('#txt_'+metaData.code).focus();
+                        $('#txt_' + metaData.code).focus();
                         return false;
                     }
                 }
@@ -277,7 +277,7 @@
                     if (value.search(metaData.checkRegex) < 0) {
                         allowSubmit = false;
                         alert(metaData.name + "不合格数据");
-                        $('#txt_'+metaData.code).focus();
+                        $('#txt_' + metaData.code).focus();
                         return false;
                     }
                 }
@@ -333,22 +333,37 @@
     }
     //endregion
 
-    //打印
+    //region 打印
     $('#btnPrint').click(
         function () {
+            if (!id) {
+                alert("请保存合同再打印");
+                return;
+            }
             $('#contract').print({
                     //Use Global styles
-                    globalStyles : true,
-                    mediaPrint : false,
-                    iframe : false,
+                    globalStyles: true,
+                    mediaPrint: false,
+                    iframe: false,
                     //Don't print this
-                    noPrintSelector : ".avoid-this",
-                    deferred: $.Deferred().done(function() { console.log('Printing done', arguments); })
+                    noPrintSelector: ".avoid-this",
+                    deferred: $.Deferred().done(function () {
+                        console.log('Printing done', arguments);
+                    })
                 }
-
             );
         }
     );
+    //endregion
+
+    //region 返回
+    $('#btnExport').click(function () {
+        if(document.referrer){
+            alert(document.referrer);''
+        }
+        history.go(-2);
+    })
+    //endregion
 
 </script>
 </html>
