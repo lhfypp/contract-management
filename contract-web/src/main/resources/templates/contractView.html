@@ -37,7 +37,7 @@
 <body >
 <div id="contract" th:utext="${contractView}" style="margin: 0 auto;width: 800px "> </div>
 <div class="mybtn">
-    <button type="button"    id="btnPrint">打印</button><button type="button"    id="btnExport">导出</button>
+    <button type="button"    id="btnPrint">打印</button>  <button type="button" id="btnBack">返回</button>
 </div>
 </body>
 <script  th:inline="javascript">
@@ -57,6 +57,17 @@
              );
           }
       );
+
+      //region 返回
+      $('#btnBack').click(function () {
+          if(document.referrer){
+              //alert(document.referrer);
+              window.location.href=document.referrer;//.indexOf('?')>-1? document.referrer+"&back=1": document.referrer+"?back=1";
+          }
+
+          // history.go(-2);
+      })
+      //endregion
   })
 //     $('#btnSave').click(
 //         function () {

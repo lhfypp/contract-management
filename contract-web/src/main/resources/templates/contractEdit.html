@@ -71,11 +71,11 @@
     </div>
     <div class="box">
         <span>配套设施:</span> <input name="support_facility" type="text" id="support_facility">
-        <span>备注:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> <input name="remark" type="text" id="remark">
+        <span style="display: inline-block;margin-right: 35px;">备注:</span> <input name="remark" type="text" id="remark">
     </div>
 
     <div class="box">
-        <span>区域:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span style="display: inline-block;margin-right: 25px;">区域:</span>
         <select id="rent_area" name="rent_area">
             <option value="">请选择区域</option>
             <option th:each="area:${areas}" th:value="${area.id} " th:text="${area.areaName}">
@@ -94,7 +94,7 @@
 <div class="mybtn">
     <button type="button" id="btnSave">保存</button>
     <button type="button" id="btnPrint">打印</button>
-    <button type="button" id="btnExport">返回</button>
+    <button type="button" id="btnBack">返回</button>
 </div>
 </body>
 <script th:inline="javascript">
@@ -357,11 +357,13 @@
     //endregion
 
     //region 返回
-    $('#btnExport').click(function () {
+    $('#btnBack').click(function () {
         if(document.referrer){
-            alert(document.referrer);''
+            //alert(document.referrer);
+            window.location.href=document.referrer.indexOf('?')>-1? document.referrer+"&back=1": document.referrer+"?back=1";
         }
-        history.go(-2);
+
+       // history.go(-2);
     })
     //endregion
 
