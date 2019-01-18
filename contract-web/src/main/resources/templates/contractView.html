@@ -8,6 +8,9 @@
     <style type="text/css">
         /*input {border:none;}*/
         /*.cc{padding: 0px;margin: 0px; outline: 0px;line-height:26px; border-bottom: 1px solid #333333;text-align:center;}*/
+        body{
+            overflow-x:hidden;
+        }
         .cc {
             padding: 0px;
             margin: 0px;
@@ -37,7 +40,8 @@
 <body >
 <div id="contract" th:utext="${contractView}" style="margin: 0 auto;width: 800px "> </div>
 <div class="mybtn">
-    <button type="button"    id="btnPrint">打印</button>  <button type="button" id="btnBack">返回</button>
+    <button type="button"    id="btnPrint">打印</button>
+    <!--<button type="button" id="btnBack">返回</button>-->
 </div>
 </body>
 <script  th:inline="javascript">

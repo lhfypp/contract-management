@@ -10,7 +10,9 @@
     <script th:src="@{/js/bootstrap.min.js}"></script>
     <script th:src="@{/js/bootstrap-select.min.js}"></script>
     <style type="text/css">
-
+        body{
+            overflow-x:hidden;
+        }
         .cc {
             padding: 0px;
             margin: 0px;
@@ -70,6 +72,9 @@
         <span>联系电话:</span> <input name="company_mobile" type="text" id="company_mobile">
     </div>
     <div class="box">
+        <span id="span_total_fee"><span style="display: inline-block;margin-right: 25px;">总额<span
+                style="color: red">*</span>:</span>
+        <input name="total_fee" type="text" id="total_fee"></span>
         <span>配套设施:</span> <input name="support_facility" type="text" id="support_facility">
         <span style="display: inline-block;margin-right: 35px;">备注:</span> <input name="remark" type="text" id="remark">
     </div>
@@ -117,42 +122,9 @@
     var contract_no = null;
 
     $(function () {
-        //设置页面按钮居中
-        var width = $(document.body).width();
-        //第一行累加宽度是530左右
-        $('.box').css({"margin-left": ((width - 600) / 2) + "px"});
-        if (onlineUserVo) {
-            //company_id
-            $('#company_id').val(company_id);
-            $('#merchant_name').val(onlineUserVo.userName);
-            $('#company_mobile').val(onlineUserVo.phone);
-        }
 
-        if (valueMap) {
-            id = valueMap.id;
-            contract_no = valueMap.contract_no;
-            contract_template_category_id = valueMap.contract_template_category_id;
+        initControl();
 
-            //设置变量值，后期设置控件值
-            $('#company_mobile').val(valueMap.company_mobile);
-            $('#merchant_name').val(valueMap.merchant_name);
-            company_id = valueMap.company_id;
-            $('#company_id').val(company_id);
-            $('#rent_area').val(valueMap.rent_area_id);
-            if (valueMap.rent_site_no) {
-                $('#rent_site').val(valueMap.rent_site_no.split(","));
-            }
-            //  rent_site_no = valueMap.rent_site_no;
-            $('#support_facility').val(valueMap.support_facility);
-            $('#remark').val(valueMap.remark);
-
-        }
-
-
-        $('#rent_site').selectpicker({
-            //  'selectedText': 'cat'
-            "noneSelectedText": "请选择"
-        });
 
         //region 区域修改
         $('#rent_area').change(function () {
@@ -258,7 +230,12 @@
                     if (!value) {
                         allowSubmit = false;
                         alert(metaData.name + "不允许为空");
-                        $('#txt_' + metaData.code).focus();
+                        if($('#txt_' + metaData.code)[0]!=null) {
+                            $('#txt_' + metaData.code).focus();
+                        }
+                        else {
+                            $('#' + metaData.code).focus();
+                        }
                         return false;
                     }
                 }
@@ -268,7 +245,12 @@
                     if (isNaN(value)) {
                         allowSubmit = false;
                         alert(metaData.name + "需要填写数字");
-                        $('#txt_' + metaData.code).focus();
+                        if($('#txt_' + metaData.code)[0]!=null) {
+                            $('#txt_' + metaData.code).focus();
+                        }
+                        else {
+                            $('#' + metaData.code).focus();
+                        }
                         return false;
                     }
                 }
@@ -277,7 +259,12 @@
                     if (value.search(metaData.checkRegex) < 0) {
                         allowSubmit = false;
                         alert(metaData.name + "不合格数据");
-                        $('#txt_' + metaData.code).focus();
+                        if($('#txt_' + metaData.code)[0]!=null) {
+                            $('#txt_' + metaData.code).focus();
+                        }
+                        else {
+                            $('#' + metaData.code).focus();
+                        }
                         return false;
                     }
                 }
@@ -330,6 +317,11 @@
         }
         data["support_facility"] = $('#support_facility').val();
         data["remark"] = $('#remark').val();
+
+        var totalFeeMetaData = getMetaDataByCode("total_fee");
+        if (totalFeeMetaData) {
+            data["total_fee"] = $('#total_fee').val();
+        }
     }
     //endregion
 
@@ -358,14 +350,82 @@
 
     //region 返回
     $('#btnBack').click(function () {
-        if(document.referrer){
+        if (document.referrer) {
             //alert(document.referrer);
-            window.location.href=document.referrer.indexOf('?')>-1? document.referrer+"&back=1": document.referrer+"?back=1";
+            window.location.href = document.referrer.indexOf('?') > -1 ? document.referrer + "&back=1" : document.referrer + "?back=1";
         }
 
-       // history.go(-2);
+        // history.go(-2);
     })
     //endregion
 
+    //region 初始化控件并设置值
+    function initControl() {
+        //设置页面按钮居中
+        var width = $(document.body).width();
+//        alert("document.body:"+width);
+//        alert("window:"+$(window).width());
+//        alert("window:"+$(document).width());
+        //第一行累加宽度是530左右
+        $('.box').css({"margin-left": ((width - 600) / 2) + "px"});
+
+        $('#rent_site').selectpicker({
+            //  'selectedText': 'cat'
+            "noneSelectedText": "请选择"
+        });
+
+        var totalFeeMetaData = getMetaDataByCode("total_fee");
+        if (!totalFeeMetaData) {
+            $('#span_total_fee').hide();
+        }
+        else {
+            if (totalFeeMetaData.allowNull != null && totalFeeMetaData.allowNull != 0) {
+                $($('#span_total_fee').find('span')[1]).hide();
+            }
+        }
+
+        if (onlineUserVo) {
+            //company_id
+            $('#company_id').val(company_id);
+            $('#merchant_name').val(onlineUserVo.userName);
+            $('#company_mobile').val(onlineUserVo.phone);
+        }
+
+        if (valueMap) {
+            id = valueMap.id;
+            contract_no = valueMap.contract_no;
+            contract_template_category_id = valueMap.contract_template_category_id;
+
+            //设置变量值，后期设置控件值
+            $('#company_mobile').val(valueMap.company_mobile);
+            $('#merchant_name').val(valueMap.merchant_name);
+            company_id = valueMap.company_id;
+            $('#company_id').val(company_id);
+            $('#rent_area').val(valueMap.rent_area_id);
+            if (valueMap.rent_site_no) {
+                $('#rent_site').val(valueMap.rent_site_no.split(","));
+            }
+            //  rent_site_no = valueMap.rent_site_no;
+            $('#support_facility').val(valueMap.support_facility);
+            $('#remark').val(valueMap.remark);
+
+            if (totalFeeMetaData) {
+                $('#total_fee').val(valueMap.total_fee);
+            }
+
+        }
+
+    }
+    //endregion
+    function getMetaDataByCode(code) {
+        if (!code || !metaDatas)
+            return null;
+        for (var i = 0; i < metaDatas.length; i++) {
+            if (metaDatas[i].code == code) {
+                return metaDatas[i];
+            }
+        }
+        return null;
+    }
 </script>
 </html>

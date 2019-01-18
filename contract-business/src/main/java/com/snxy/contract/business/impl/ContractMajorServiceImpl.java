@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.EscapedErrors;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -38,6 +39,11 @@ public class ContractMajorServiceImpl implements ContractMajorService {
             "contract_no",
             "contract_template_category_id",
             "drafter_id"
+    );
+
+    private final static List<String> moneyFields= Arrays.asList(
+            "total_fee"
+
     );
 
     @Resource
@@ -66,6 +72,8 @@ public class ContractMajorServiceImpl implements ContractMajorService {
             throw new BizException(String.format("templateCategoryId为%s没找到元数据", templateCategoryId));
         }
 
+        //金额特殊处理
+        dealMoney(valueMap,true);
 
         if (valueMap.get("id") != null && StringUtils.isNotBlank(valueMap.get("id").toString())) {//合同id
             long contractMajorId = Long.parseLong(valueMap.get("id").toString());
@@ -73,6 +81,29 @@ public class ContractMajorServiceImpl implements ContractMajorService {
         }
 
         return insertContract(creatorId, contractMetaDatas, valueMap);
+    }
+
+    private void dealMoney(Map<String, Object> valueMap,boolean isSave) {
+        if(isSave){
+            moneyFields.parallelStream().forEach(moneyField->{
+                if( valueMap.get(moneyField) !=null){
+                    if(StringUtils.isNotBlank(valueMap.get(moneyField).toString())){
+                        long money=Long.parseLong(valueMap.get(moneyField).toString());
+                        valueMap.put(moneyField,(money*100));
+                    }
+                }
+            });
+        }
+        else {
+            moneyFields.parallelStream().forEach(moneyField->{
+                if( valueMap.get(moneyField) !=null){
+                    if(StringUtils.isNotBlank(valueMap.get(moneyField).toString())){
+                        long money=Long.parseLong(valueMap.get(moneyField).toString());
+                        valueMap.put(moneyField,(money/100));
+                    }
+                }
+            });
+        }
     }
 
 
@@ -164,7 +195,7 @@ public class ContractMajorServiceImpl implements ContractMajorService {
         String selectSql = ContractSqlEngine.getSelectSql(contractMetaDatas, contractMajorId, extraFields);
 
         Map<String, Object> valueMap = contractMajorMapper.selectBySql(selectSql);
-
+        dealMoney(valueMap,false);
         List<ContractFieldResult> cfrs = contractFieldResultService.getByContractMajorId(contractMajorId);
         cfrs.parallelStream().forEach(cfr -> {
             ContractMetaData contractMetaData = contractMetaDatas.parallelStream().filter(cmd -> cmd.getId().equals(cfr.getContractFieldId())).findFirst().orElse(null);
@@ -354,6 +385,7 @@ public class ContractMajorServiceImpl implements ContractMajorService {
         }
         //合同签订时间
         String signTimeCode = "sign_time_year";
+        String signTimeVal= extraMap.get("sign_time");
         ContractMetaData contractMetaData = contractMetaDatas.parallelStream().filter(cmd -> signTimeCode.equals(cmd.getCode())).findFirst().orElse(null);
         if(contractMetaData!=null) {
             String category = contractMetaData.getCategory() == null ? CATEGORY_DEFAULT : contractMetaData.getCategory();
@@ -363,7 +395,7 @@ public class ContractMajorServiceImpl implements ContractMajorService {
                     TimeHelperResult.builder()
                             .category(category)
                             .code(signTimeCode)
-                            .value(extraMap.get(signTimeCode))
+                            .value(signTimeVal)
                             .name(name)
                             .order(order)
                             .build()
