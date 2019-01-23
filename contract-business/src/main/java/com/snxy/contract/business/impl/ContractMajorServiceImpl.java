@@ -118,6 +118,9 @@ public class ContractMajorServiceImpl implements ContractMajorService {
         extraMap.put("status", String.valueOf(STATUS_DEFULT));
         //合同模版id
         extraMap.put("contract_template_category_id", valueMap.get("contract_template_category_id").toString());
+        //合同默认费用处理
+        dealExtraMoney(valueMap,extraMap);
+
         addTime(valueMap, extraMap, true);
         String insertSql = ContractSqlEngine.getMajorInsrtSql(contractMetaDatas, valueMap, extraMap);
 //        ContractMajor contractMajor = new ContractMajor();
@@ -136,6 +139,16 @@ public class ContractMajorServiceImpl implements ContractMajorService {
         return contractMajorId;
     }
 
+    private void dealExtraMoney(Map<String, Object> valueMap, Map<String, String> extraMap) {
+        extraMap.put("received_fee","0");//新增已收为0
+        //欠款默认为总金额
+        if(valueMap.get("total_fee")!=null){
+            if(StringUtils.isNotBlank(valueMap.get("total_fee").toString())) {
+                extraMap.put("residual_fee",valueMap.get("total_fee").toString());
+            }
+        }
+    }
+
 
     private String buildContractNo() {
         ///TODO
@@ -149,6 +162,8 @@ public class ContractMajorServiceImpl implements ContractMajorService {
 
     private Long updateContract(long creatorId, long contractMajorId, List<ContractMetaData> contractMetaDatas, Map<String, Object> valueMap) {
         Map<String, String> extraMap = new HashMap<>();
+        //合同默认费用处理
+        dealExtraMoney(valueMap,extraMap);
         addTime(valueMap, extraMap, false);
         String updateSql = ContractSqlEngine.getUpdateSql(contractMetaDatas, valueMap, extraMap, contractMajorId);
         log.debug("updateSql:{}", updateSql);
