@@ -37,11 +37,17 @@
 
         .box input {
             display: inline-block;
+            -webkit-border-radius: .3em;
+            -moz-border-radius: .3em;
+            border-radius: .3em;
+            border: 1px solid lightgray;
+            height: 32px;
+            width: 180px;
         }
 
         .box select {
             display: inline-block;
-            width: 174px;
+            width: 150px;
         }
 
         .mybtn {
@@ -62,7 +68,7 @@
 <div>
     <div class="box">
         <span>商户名称:</span>
-        <select id="company_id" name="company_id">
+        <select id="company_id" name="company_id"  class="selectpicker bla bla bli"   data-live-search="true">
             <option value="">请选择商户</option>
             <option th:each="company:${companys}" th:value="${company.id} " th:text="${company.merchantName}">
                 [[${company.merchantName}]]
@@ -72,22 +78,22 @@
         <span>联系电话:</span> <input name="company_mobile" type="text" id="company_mobile">
     </div>
     <div class="box">
-        <span id="span_total_fee"><span style="display: inline-block;margin-right: 25px;">总额<span
+        <span id="span_total_fee"><span style="display: inline-block;margin-right: 22px;">总额<span
                 style="color: red">*</span>:</span>
         <input name="total_fee" type="text" id="total_fee"></span>
-        <span>配套设施:</span> <input name="support_facility" type="text" id="support_facility">
-        <span style="display: inline-block;margin-right: 35px;">备注:</span> <input name="remark" type="text" id="remark">
+        <span style="display: inline-block;margin-right: 15px;">配套设施:</span> <input name="support_facility" type="text" id="support_facility">
+        <span style="display: inline-block;margin-right: 28px;">备注:</span> <input name="remark" type="text" id="remark">
     </div>
 
     <div class="box">
-        <span style="display: inline-block;margin-right: 25px;">区域:</span>
-        <select id="rent_area" name="rent_area">
+        <span style="display: inline-block;margin-right: 26px;">区域:</span>
+        <select id="rent_area" name="rent_area"  class="selectpicker bla bla bli"   data-live-search="true">
             <option value="">请选择区域</option>
             <option th:each="area:${areas}" th:value="${area.id} " th:text="${area.areaName}">
                 [[${area.areaName}]]
             </option>
         </select>
-        <span>地点编号(可多选):</span>
+        <span>地点(可多选):</span>
         <select id="rent_site" class="selectpicker bla bla bli" multiple data-live-search="true">
             <option th:each="rentSite:${rentSites}" th:text="${rentSite.siteNo}">
                 [[${rentSite.siteNo}]]
@@ -97,9 +103,9 @@
 </div>
 <div id="contract" th:utext="${contractEdit}" style="margin: 0 auto;width: 800px"></div>
 <div class="mybtn">
-    <button type="button" id="btnSave">保存</button>
-    <button type="button" id="btnPrint">打印</button>
-    <button type="button" id="btnBack">返回</button>
+    <button type="button" id="btnSave">暂存</button>
+    <!--<button type="button" id="btnPrint">打印</button>-->
+    <button type="button" id="btnBack">取消</button>
 </div>
 </body>
 <script th:inline="javascript">
@@ -272,7 +278,7 @@
             if (allowSubmit == false) {
                 return;
             }
-            console.log(data);
+        //    console.log(data);
             $.ajax({
                 cache: true,
                 type: "post",
@@ -286,6 +292,7 @@
 //                        alert(data.data);
                         id = data.data;//给合同id赋值
                         alert(data.msg);
+                        $('#btnBack').trigger('click');
                     }
                     else {
                         console.log(data.msg);
@@ -368,11 +375,12 @@
 //        alert("window:"+$(window).width());
 //        alert("window:"+$(document).width());
         //第一行累加宽度是530左右
-        $('.box').css({"margin-left": ((width - 600) / 2) + "px"});
+        $('.box').css({"margin-left": ((width - 650) / 2) + "px"});
 
-        $('#rent_site').selectpicker({
+        $('.selectpicker').selectpicker({
             //  'selectedText': 'cat'
-            "noneSelectedText": "请选择"
+            "noneSelectedText": "请选择",
+            "width":180
         });
 
         var totalFeeMetaData = getMetaDataByCode("total_fee");
@@ -387,7 +395,7 @@
 
         if (onlineUserVo) {
             //company_id
-            $('#company_id').val(company_id);
+            $('#company_id').selectpicker('val',company_id);//20190131
             $('#merchant_name').val(onlineUserVo.userName);
             $('#company_mobile').val(onlineUserVo.phone);
         }
@@ -401,10 +409,10 @@
             $('#company_mobile').val(valueMap.company_mobile);
             $('#merchant_name').val(valueMap.merchant_name);
             company_id = valueMap.company_id;
-            $('#company_id').val(company_id);
-            $('#rent_area').val(valueMap.rent_area_id);
+            $('#company_id').selectpicker('val',company_id);// $('#company_id').val(company_id);
+            $('#rent_area').selectpicker('val',valueMap.rent_area_id);
             if (valueMap.rent_site_no) {
-                $('#rent_site').val(valueMap.rent_site_no.split(","));
+                $('#rent_site').selectpicker('val',valueMap.rent_site_no.split(","));
             }
             //  rent_site_no = valueMap.rent_site_no;
             $('#support_facility').val(valueMap.support_facility);
